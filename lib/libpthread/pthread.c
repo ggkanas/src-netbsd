@@ -107,7 +107,7 @@ int pthread__nspins;
 int pthread__unpark_max = PTHREAD__UNPARK_MAX;
 int pthread__dbg;	/* set by libpthread_dbg if active */
 
-/* 
+/*
  * We have to initialize the pthread_stack* variables here because
  * mutexes are used before pthread_init() and thus pthread__initmain()
  * are called.  Since mutexes only save the stack pointer and not a
@@ -168,9 +168,9 @@ pthread__init(void)
 
 	/*
 	 * Allocate pthread_keys descriptors before
-	 * reseting __uselibcstub because otherwise 
+	 * reseting __uselibcstub because otherwise
 	 * malloc() will call pthread_keys_create()
-	 * while pthread_keys descriptors are not 
+	 * while pthread_keys descriptors are not
 	 * yet allocated.
 	 */
 	pthread__main = pthread_tsd_init(&__pthread_st_size);
@@ -282,14 +282,33 @@ pthread__start(void)
 	/*
 	 * Per-process timers are cleared by fork(); despite the
 	 * various restrictions on fork() and threads, it's legal to
-	 * fork() before creating any threads. 
+	 * fork() before creating any threads.
 	 */
 	pthread_atfork(NULL, NULL, pthread__child_callback);
 }
 
 
+/* find better way to call bmk_memcpy rather than re-defining it */
+void *
+pthread_memcpy(void *d, const void *src, unsigned long n)
+{
+	unsigned char *dp;
+	const unsigned char *sp;
+
+	dp = d;
+	sp = src;
+
+	while (n--)
+		*dp++ = *sp++;
+
+	return d;
+}
+
+
 /* General-purpose thread data structure sanitization. */
 /* ARGSUSED */
+
+
 static void
 pthread__initthread(pthread_t t)
 {
@@ -307,7 +326,7 @@ pthread__initthread(pthread_t t)
 	t->pt_blocking = 0;
 	t->pt_droplock = NULL;
 
-	memcpy(&t->pt_lockops, pthread__lock_ops, sizeof(t->pt_lockops));
+	pthread_memcpy(&t->pt_lockops, pthread__lock_ops, sizeof(t->pt_lockops));
 	pthread_mutex_init(&t->pt_lock, NULL);
 	PTQ_INIT(&t->pt_cleanup_stack);
 	pthread_cond_init(&t->pt_joiners, NULL);
@@ -600,7 +619,7 @@ pthread_suspend_np(pthread_t thread)
 int
 pthread_resume_np(pthread_t thread)
 {
- 
+
 	if (pthread__find(thread) != 0)
 		return ESRCH;
 	if (_lwp_continue(thread->pt_lid) == 0)
@@ -1068,7 +1087,7 @@ pthread__assertfunc(const char *file, int line, const char *function,
 	 * snprintf should not acquire any locks, or we could
 	 * end up deadlocked if the assert caller held locks.
 	 */
-	len = snprintf(buf, 1024, 
+	len = snprintf(buf, 1024,
 	    "assertion \"%s\" failed: file \"%s\", line %d%s%s%s\n",
 	    expr, file, line,
 	    function ? ", function \"" : "",
@@ -1088,7 +1107,7 @@ pthread__errorfunc(const char *file, int line, const char *function,
 {
 	char buf[1024];
 	size_t len;
-	
+
 	if (pthread__diagassert == 0)
 		return;
 
@@ -1096,7 +1115,7 @@ pthread__errorfunc(const char *file, int line, const char *function,
 	 * snprintf should not acquire any locks, or we could
 	 * end up deadlocked if the assert caller held locks.
 	 */
-	len = snprintf(buf, 1024, 
+	len = snprintf(buf, 1024,
 	    "%s: Error detected by libpthread: %s.\n"
 	    "Detected by file \"%s\", line %d%s%s%s.\n"
 	    "See pthread(3) for information.\n",
@@ -1138,7 +1157,7 @@ pthread__park(pthread_t self, pthread_mutex_t *lock,
 
 	/*
 	 * For non-interlocked release of mutexes we need a store
-	 * barrier before incrementing pt_blocking away from zero. 
+	 * barrier before incrementing pt_blocking away from zero.
 	 * This is provided by pthread_mutex_unlock().
 	 */
 	self->pt_willpark = 1;
