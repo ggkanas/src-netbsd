@@ -1,0 +1,10 @@
+
+
+ioconf mmio
+
+include "conf/files"
+include "rump/dev/files.rump"
+
+pseudo-root mainbus*
+
+mmio& at mainbus? bus ?

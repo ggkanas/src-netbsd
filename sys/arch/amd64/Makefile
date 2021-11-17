@@ -40,4 +40,7 @@ links:
 SUBDIR=	compile include ../x86/include ../xen/include \
 	../i386/include ../i386/stand
 
+INCSDIR= /usr/include/machine
+INCS= types.h int_types.h cdefs.h
+
 .include <bsd.subdir.mk>

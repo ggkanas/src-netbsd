@@ -496,6 +496,7 @@ struct kinfo_pcb {
 #define	SOMAXCONN	128
 #endif
 
+#include <machine/cdefs.h>
 #include <sys/cdefs.h>
 
 /*

@@ -59,7 +59,7 @@
 #define	__GNUC_PREREQ__(x, y)	0
 #endif
 
-#include <machine/cdefs.h>
+//#include <machine/cdefs.h>
 #ifdef __ELF__
 #include <sys/cdefs_elf.h>
 #else
@@ -153,7 +153,7 @@
 #define	__CTASSERT99(x, a, b)	__CTASSERT0(x, __CONCAT(__ctassert,a), \
 					       __CONCAT(_,b))
 #endif
-#define	__CTASSERT0(x, y, z)	__CTASSERT1(x, y, z) 
+#define	__CTASSERT0(x, y, z)	__CTASSERT1(x, y, z)
 #define	__CTASSERT1(x, y, z)	typedef char y ## z[/*CONSTCOND*/(x) ? 1 : -1] __unused
 
 /*

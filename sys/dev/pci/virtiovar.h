@@ -68,6 +68,9 @@
 #include <sys/types.h>
 #include <sys/queue.h>
 #include <sys/bus.h>
+#include <sys/device.h>
+
+#include <dev/pci/pcivar.h>
 #include <dev/pci/virtioreg.h>
 
 struct vq_entry {

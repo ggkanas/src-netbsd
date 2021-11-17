@@ -5,7 +5,7 @@
 INCSDIR= /usr/include/sys
 
 INCS=	acct.h agpio.h aio.h ansi.h aout_mids.h ataio.h atomic.h audioio.h \
-	bitops.h bootblock.h bswap.h buf.h \
+	bitops.h bootblock.h bswap.h buf.h bus.h\
 	callback.h callout.h cdbr.h cdefs.h cdefs_aout.h \
 	cdefs_elf.h cdio.h chio.h clock.h clockctl.h \
 	common_ansi.h common_int_const.h common_int_fmtio.h \
