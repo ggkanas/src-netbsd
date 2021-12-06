@@ -104,7 +104,7 @@ uint8_t read_config(mmio_dev* dev, uint32_t offset);
 bool parse_config(mmio_dev* dev);
 
 struct dev_info_t* parse_mmio_device_info(char *cmdline);
-void parse_mmio_device_configuration(char *cmdline);
+//void parse_mmio_device_configuration(char *cmdline);
 
 
 

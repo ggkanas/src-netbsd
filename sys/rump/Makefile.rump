@@ -202,7 +202,7 @@ _SYMQUIRK="|PF_funcs"
 # complaints about symbols like 'rumpns_XrumpBLAH' or 'XrumpBLAH';
 # the 'X' part was added by the toolchain and will need to
 # be mentioned here.
-# 
+#
 .if ${MACHINE_ARCH} == "powerpc64"
 _PQ="\.?"
 .else

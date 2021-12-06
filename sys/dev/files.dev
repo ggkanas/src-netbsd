@@ -18,6 +18,7 @@ file	dev/keylock.c			keylock
 file	dev/lockstat.c			lockstat		needs-flag
 file	dev/md.c			md
 file	dev/mm.c			kern	# XXX
+file    dev/mmio-api.c      mmio-api
 file	dev/nullcons_subr.c		nullcons		needs-flag
 file	dev/radio.c			radio			needs-flag
 file	dev/rndpseudo.c			rnd			needs-flag

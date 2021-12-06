@@ -8,7 +8,7 @@ COMMENT=Memory-Mapped IO
 IOCONF=	MMIO.ioconf
 RUMP_COMPONENT=ioconf
 
-SRCS+=	mmio.c
+SRCS+=	mmio.c mmio-api.c
 
 CPPFLAGS+= -I${RUMPTOP}/librump/rumpkern
 

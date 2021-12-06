@@ -8,7 +8,7 @@ INCSDIR=	/usr/include/rump
 INCS=		rump.h rump_namei.h rump_syscalls.h rump_syscalls_compat.h
 INCS+=		rump_syscallshotgun.h
 INCS+=		rumpdefs.h rumperr.h rumperrno2host.h rumpuser.h rumpvnode_if.h
-INCS+=		rumpfs.h
+INCS+=		rumpfs.h mmio-api.h
 
 INCS+=		rumpkern_if_pub.h rumpvfs_if_pub.h rumpnet_if_pub.h
 .endif

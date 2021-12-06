@@ -140,7 +140,6 @@
 
 /* More types and definitions used throughout the kernel. */
 #ifdef _KERNEL
-#include <machine/cdefs.h>
 #include <sys/cdefs.h>
 #include <sys/errno.h>
 #include <sys/time.h>

@@ -25,9 +25,9 @@ MAN=		rump.3 rump_lwproc.3
 
 #
 # Source modules, first the ones specifically implemented for librump.
-# 
+#
 SRCS+=	rump.c rumpcopy.c cons.c emul.c etfs_wrap.c intr.c	\
-	lwproc.c klock.c kobj_rename.c ltsleep.c scheduler.c	\
+	lwproc.c klock.c kobj_rename.c ltsleep.c mmio-api.c scheduler.c	\
 	signals.c sleepq.c threads.c vm.c hyperentropy.c	\
 	accessors.c
 
