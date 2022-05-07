@@ -77,6 +77,9 @@ struct mmio_device {
 
 typedef struct mmio_device mmio_dev;
 
+extern struct dev_info_t mmio_device_info_entries[128];
+extern int mmio_device_info_entry_index;
+
 void mmio_setb(mmioaddr_t addr, uint8_t val);
 void mmio_setw(mmioaddr_t addr, uint16_t val);
 void mmio_setl(mmioaddr_t addr, uint32_t val);
@@ -96,7 +99,7 @@ void set_enabled_features(mmio_dev* dev, uint64_t features);
 void kick_queue(mmio_dev* dev, int queue_num);
 void select_queue(mmio_dev* dev, int queue_num);
 uint16_t get_queue_size(mmio_dev* dev);
-void setup_queue(mmio_dev* dev, struct virtqueue* queue);
+//void setup_queue(mmio_dev* dev, struct virtqueue* queue);
 void activate_queue(mmio_dev* dev, int queue);
 uint8_t read_and_ack_isr(mmio_dev* dev);
 uint8_t read_config(mmio_dev* dev, uint32_t offset);

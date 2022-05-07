@@ -41,6 +41,7 @@ __KERNEL_RCSID(0, "$NetBSD: mainbus.c,v 1.37 2016/06/21 11:33:32 nonaka Exp $");
 
 #include <dev/isa/isavar.h>
 #include <dev/pci/pcivar.h>
+#include <dev/virtio/mmiocmdlvar.h>
 
 #include <dev/isa/isareg.h>
 
@@ -122,7 +123,7 @@ struct mp_bus *mp_busses;
 int mp_nbus;
 struct mp_intr_map *mp_intrs;
 int mp_nintr;
- 
+
 int mp_isa_bus = -1;
 int mp_eisa_bus = -1;
 
@@ -148,12 +149,21 @@ mainbus_match(device_t parent, cfdata_t match, void *aux)
 	return 1;
 }
 
+static inline void
+outb(uint16_t port, uint8_t value)
+{
+
+        __asm__ __volatile__("outb %0, %1" :: "a"(value), "d"(port));
+}
+
 /*
  * Attach the mainbus.
  */
 void
 mainbus_attach(device_t parent, device_t self, void *aux)
 {
+    outb(0x3f8, 0x59);
+    outb(0x3f8, 0x0a);
 #if NPCI > 0 || NACPICA > 0 || NIPMI > 0
 	union mainbus_attach_args mba;
 #endif
@@ -220,12 +230,12 @@ mainbus_attach(device_t parent, device_t self, void *aux)
 #endif
 		if (numcpus == 0) {
 			struct cpu_attach_args caa;
-                        
+
 			memset(&caa, 0, sizeof(caa));
 			caa.cpu_number = 0;
 			caa.cpu_role = CPU_ROLE_SP;
 			caa.cpu_func = 0;
-                        
+
 			config_found_ia(self, "cpubus", &caa, mainbus_print);
 		}
 	}
@@ -308,6 +318,22 @@ mainbus_attach(device_t parent, device_t self, void *aux)
 
 	if (!pmf_device_register(self, NULL, NULL))
 		aprint_error_dev(self, "couldn't establish power handler\n");
+    aprint_normal("wot\n");
+    aprint_naive("wot?\n");
+#define MMIOCMDL
+#ifdef MMIOCDML
+    int mmio_present = mmiocmdl_probe();
+    //dgreg
+    struct mmiocmdl_attach_args maa;
+    maa.maa_dmat = &pci_bus_dma_tag;
+    maa.maa_bst = x86_bus_space_mem;
+    aprint_normal("hello?\n");
+    aprint_naive("hello?\n");
+    if(mmio_present) {
+        aprint_normal("hello?\n");
+        config_found_ia(self, "mmiocmdl", &maa, NULL)
+    }
+#endif //MMIOCDML
 }
 
 int

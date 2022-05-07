@@ -37,10 +37,20 @@
 
 #include "stand.h"
 
+static inline void
+outb(__uint16_t port, __uint8_t value)
+{
+
+        __asm__ __volatile__("outb %0, %1" :: "a"(value), "d"(port));
+}
+
 void
 printf(const char *fmt, ...)
 {
+    outb(0x3f8, 0x58);
+    outb(0x3f8, 0x0a);
 	va_list ap;
+    //write(2, "kawal\n", 6);
 
 	va_start(ap, fmt);
 	vprintf(fmt, ap);

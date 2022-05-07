@@ -32,6 +32,11 @@ __KERNEL_RCSID(0, "$NetBSD: autoconf.c,v 1.9 2016/01/26 23:12:17 pooka Exp $");
 #include <sys/device.h>
 #include <sys/kernel.h>
 
+
+
+#include <dev/pci/pcivar.h>
+#include <dev/virtio/mmiocmdlvar.h>
+
 static int	mainbus_match(device_t, cfdata_t, void *);
 static void	mainbus_attach(device_t, device_t, void *);
 static int	mainbus_search(device_t, cfdata_t, const int *, void *);
@@ -64,6 +69,8 @@ const short cfroots[] = {
 	0, /* mainbus */
 	-1
 };
+
+extern cfdata_t rumpns_cfdata_ioconf_mmiocmdl;
 
 /* actually used */
 #define MAXPDEVS 256
@@ -104,7 +111,6 @@ mainbus_match(device_t parent, cfdata_t match, void *aux)
 static void
 mainbus_attach(device_t parent, device_t self, void *aux)
 {
-
 	aprint_normal("\n");
 	config_search_ia(mainbus_search, self, "mainbus", NULL);
 }
@@ -133,7 +139,8 @@ void
 rump_mainbus_attach(void)
 {
 	const struct cfattachinit *cfai = &cfattach_ioconf_mainbus[0];
-
+    aprint_normal("cf mainbus atname %s\n", cfdata->cf_atname);
+    aprint_normal("cf attach mainbus name %s\n", cfai->cfai_name);
 	config_cfdata_attach(cfdata, 0);
 	config_cfdriver_attach(cfdriver_ioconf_mainbus[0]);
 	config_cfattach_attach(cfai->cfai_name, cfai->cfai_list[0]);

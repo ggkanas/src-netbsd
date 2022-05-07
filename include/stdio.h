@@ -59,7 +59,7 @@ typedef __va_list va_list;
 
 #include <sys/null.h>
 
-/*      
+/*
  * This is fairly grotesque, but pure ANSI code must not inspect the
  * innards of an fpos_t anyway.  The library internally uses off_t,
  * which we assume is exactly as big as eight chars.
@@ -456,7 +456,7 @@ int	__swbuf(int, FILE *);
 __END_DECLS
 
 /*
- * The __sfoo macros are here so that we can 
+ * The __sfoo macros are here so that we can
  * define function versions in the C library.
  */
 #define	__sgetc(p) (--(p)->_r < 0 ? __srget(p) : (int)(*(p)->_p++))

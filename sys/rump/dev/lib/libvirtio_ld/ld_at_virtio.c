@@ -63,7 +63,7 @@ RUMP_COMPONENT(RUMP_COMPONENT_POSTINIT)
 	if ((error = devsw_attach("ld", &ld_bdevsw, &bmaj,
 	    &ld_cdevsw, &cmaj)) != 0)
 		panic("cannot attach ld: %d", error);
-        
+
 	for (i = 0; i < 10; i++) {
 		char bbase[] = "/dev/ldX";
 		char rbase[] = "/dev/rldX";

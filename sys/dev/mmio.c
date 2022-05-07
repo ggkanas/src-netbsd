@@ -4,9 +4,12 @@
 #include <dev/mmio.h>
 #include <dev/pci/virtiovar.h>
 
+#include <sys/param.h>
+#include <uvm/uvm_extern.h>
 
-#include <uvm/uvm.h>
-#include <uvm/uvm_prot.h>
+
+//#include <uvm/uvm.h>
+//#include <uvm/uvm_prot.h>
 
 void mmio_setb(mmioaddr_t addr, uint8_t val)
 {
@@ -54,7 +57,8 @@ extern struct vm_map *kernel_map;
 mmioaddr_t mmio_map(uint64_t paddr, size_t size_bytes)
 {
     vaddr_t* map_to = NULL;
-    uvm_map_findspace(kernel_map, (vaddr_t)paddr, (vsize_t)size_bytes, map_to, NULL, 0, 0, 0);
+    //pmap_virtual_space(NULL, map_to);
+    //uvm_map_findspace(kernel_map, (vaddr_t)paddr, (vsize_t)size_bytes, map_to, NULL, 0, 0, 0);
     pmap_enter(kernel_map->pmap, *map_to, paddr, VM_PROT_WRITE | VM_PROT_READ, VM_PROT_WRITE | VM_PROT_READ);
     return (mmioaddr_t) *map_to;
 }
@@ -114,7 +118,7 @@ uint16_t get_queue_size(mmio_dev* dev)
 
 
 // NOTE! Make sure conversion is correct !!!!!!!!!!
-void setup_queue(mmio_dev* dev, struct virtqueue* queue)
+/*void setup_queue(mmio_dev* dev, struct virtqueue* queue)
 {
     // Set size
     mmio_setl((uint8_t*)dev->addr_mmio + MMIO_REGISTER_QUEUE_NUM, queue->vq_num);
@@ -128,7 +132,7 @@ void setup_queue(mmio_dev* dev, struct virtqueue* queue)
 
     mmio_setl((uint8_t*)dev->addr_mmio + MMIO_REGISTER_QUEUE_DEVICE_LOW, (uint32_t)vtophys((vaddr_t)queue->vq_used));
     mmio_setl((uint8_t*)dev->addr_mmio + MMIO_REGISTER_QUEUE_DEVICE_HIGH, (uint32_t)(vtophys((vaddr_t)queue->vq_used) >> 32));
-}
+}*/
 
 void activate_queue(mmio_dev* dev, int queue)
 {

@@ -121,7 +121,7 @@ int
 viornd_match(device_t parent, cfdata_t match, void *aux)
 {
 	struct virtio_softc *va = aux;
-	if (va->sc_childdevid == PCI_PRODUCT_VIRTIO_ENTROPY)
+	if (va->sc_childdevid == VIRTIO_DEVICE_ID_ENTROPY)
 		return 1;
 	return 0;
 }
@@ -134,7 +134,7 @@ viornd_attach( device_t parent, device_t self, void *aux)
 	bus_dma_segment_t segs[1];
 	int nsegs;
 	int error;
-	uint32_t features;
+	uint64_t features;
 	char buf[256];
 
 	vsc->sc_vqs = &sc->sc_vq;
@@ -156,7 +156,7 @@ viornd_attach( device_t parent, device_t self, void *aux)
 
 	mutex_init(&sc->sc_mutex, MUTEX_DEFAULT, IPL_VM);
 
-	error = bus_dmamem_alloc(vsc->sc_dmat, 
+	error = bus_dmamem_alloc(vsc->sc_dmat,
 				 VIRTIO_PAGE_SIZE, 0, 0, segs, 1, &nsegs,
 				 BUS_DMA_NOWAIT|BUS_DMA_ALLOCNOW);
 	if (error) {
@@ -253,6 +253,6 @@ viornd_vq_done(struct virtqueue *vq)
 out:
 	virtio_dequeue_commit(vsc, vq, slot);
 	mutex_exit(&sc->sc_mutex);
-	
+
 	return 1;
 }

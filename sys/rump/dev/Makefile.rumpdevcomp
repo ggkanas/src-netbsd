@@ -1,8 +1,8 @@
 #	$NetBSD: Makefile.rumpdevcomp,v 1.23 2015/11/15 16:54:16 pooka Exp $
 #
 
-RUMPDEVCOMP=	audio bpf cgd disk dm drvctl fss md mmio netsmb		\
-		pad pud	putter raidframe rnd scsipi sysmon vnd wscons	\
+RUMPDEVCOMP=	audio bpf cgd disk dm drvctl fss md mmio mmiocmdl netsmb		\
+		pad pud	putter raidframe rnd scsipi sysmon virtio_mmiocmdl vnd wscons	\
 		opencrypto
 
 RUMPUSBDEVS=	ubt ucom ugenhc ulpt umass usb

@@ -698,7 +698,7 @@ static void
 kprintf_internal(const char *fmt, int oflags, void *vp, char *sbuf, ...)
 {
 	va_list ap;
-	
+
 	va_start(ap, sbuf);
 	(void)kprintf(fmt, oflags, vp, sbuf, ap);
 	va_end(ap);

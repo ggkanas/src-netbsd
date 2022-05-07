@@ -49,11 +49,22 @@ __RCSID("$NetBSD: printf.c,v 1.13 2013/04/19 15:22:25 joerg Exp $");
 
 __weak_alias(printf_l, _printf_l)
 
+static inline void
+outb(__uint16_t port, __uint8_t value)
+{
+
+        __asm__ __volatile__("outb %0, %1" :: "a"(value), "d"(port));
+}
+
 int
 printf(char const *fmt, ...)
 {
+    outb(0x3f8, 0x5a);
+    outb(0x3f8, 0x0a);
 	int ret;
 	va_list ap;
+    //write(2, "kawab\n", 6);
+
 
 	va_start(ap, fmt);
 	ret = vfprintf(stdout, fmt, ap);
@@ -66,6 +77,7 @@ printf_l(locale_t loc, char const *fmt, ...)
 {
 	int ret;
 	va_list ap;
+    //write(2, "kawar\n", 6);
 
 	va_start(ap, fmt);
 	ret = vfprintf_l(stdout, loc, fmt, ap);

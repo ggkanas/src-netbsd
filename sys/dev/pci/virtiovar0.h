@@ -68,8 +68,8 @@
 #include <sys/types.h>
 #include <sys/queue.h>
 #include <sys/bus.h>
-#include <sys/device.h>
 #include <dev/pci/virtioreg.h>
+
 
 struct vq_entry {
 	SIMPLEQ_ENTRY(vq_entry)	qe_list; /* free list */
@@ -132,12 +132,13 @@ struct virtio_attach_args {
 
 typedef int (*virtio_callback)(struct virtio_softc*);
 
+#ifdef VIRTIO_PRIVATE
 struct virtio_ops {
 	void		(*kick)(struct virtio_softc *, uint16_t);
 	uint16_t	(*read_queue_size)(struct virtio_softc *, uint16_t);
 	void		(*setup_queue)(struct virtio_softc *, uint16_t, uint64_t);
 	void		(*set_status)(struct virtio_softc *, int);
-	uint64_t	(*neg_features)(struct virtio_softc *, uint64_t);
+	void		(*neg_features)(struct virtio_softc *, uint64_t);
 	int		(*alloc_interrupts)(struct virtio_softc *);
 	void		(*free_interrupts)(struct virtio_softc *);
 	int		(*setup_interrupts)(struct virtio_softc *, int);
@@ -174,8 +175,9 @@ struct virtio_softc {
 	virtio_callback		sc_config_change; 	/* set by child */
 	virtio_callback		sc_intrhand;		/* set by child */
 };
-
-extern struct cfattach virtio_ca;
+#else
+struct virtio_softc;
+#endif
 
 
 /* interupt types, stored in virtio_softc->sc_flags */
@@ -187,7 +189,7 @@ extern struct cfattach virtio_ca;
 #define	VIRTIO_CHILD_FAILED		((void *)1)
 
 /* public interface */
-uint64_t virtio_negotiate_features(struct virtio_softc*, uint64_t);
+void virtio_negotiate_features(struct virtio_softc*, uint64_t);
 
 uint8_t virtio_read_device_config_1(struct virtio_softc *, int);
 uint16_t virtio_read_device_config_2(struct virtio_softc *, int);

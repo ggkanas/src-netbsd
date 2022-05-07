@@ -111,7 +111,7 @@ viomb_match(device_t parent, cfdata_t match, void *aux)
 {
 	struct virtio_softc *vsc = aux;
 
-	if (vsc->sc_childdevid == PCI_PRODUCT_VIRTIO_BALLOON)
+	if (vsc->sc_childdevid == VIRTIO_DEVICE_ID_BALLOON)
 		return 1;
 
 	return 0;
@@ -123,7 +123,7 @@ viomb_attach(device_t parent, device_t self, void *aux)
 	struct viomb_softc *sc = device_private(self);
 	struct virtio_softc *vsc = device_private(parent);
 	const struct sysctlnode *node;
-	uint32_t features;
+	uint64_t features;
 	char buf[256];
 
 	if (vsc->sc_child != NULL) {
@@ -227,7 +227,7 @@ viomb_read_config(struct viomb_softc *sc)
 	reg = virtio_read_device_config_4(sc->sc_virtio,
 					  VIRTIO_BALLOON_CONFIG_NUM_PAGES);
 	sc->sc_npages = le32toh(reg);
-	
+
 	reg = virtio_read_device_config_4(sc->sc_virtio,
 					  VIRTIO_BALLOON_CONFIG_ACTUAL);
 	sc->sc_actual = le32toh(reg);
@@ -366,7 +366,7 @@ inflate_done(struct viomb_softc *sc)
 
 	return 1;
 }
-	
+
 /*
  * Deflate: free previously allocated memory.
  */
@@ -424,7 +424,7 @@ deflate(struct viomb_softc *sc)
 	virtio_enqueue_commit(vsc, vq, slot, true);
 	sc->sc_inflight -= nvpages;
 
-	if (!(vsc->sc_features & VIRTIO_BALLOON_F_MUST_TELL_HOST))
+	if (!(vsc->sc_active_features & VIRTIO_BALLOON_F_MUST_TELL_HOST))
 		uvm_pglistfree(&b->bl_pglist);
 
 	return 0;
@@ -443,7 +443,7 @@ deflateq_done(struct virtqueue *vq)
 
 	return 1;
 }
-	
+
 static int
 deflate_done(struct viomb_softc *sc)
 {
@@ -468,7 +468,7 @@ deflate_done(struct viomb_softc *sc)
 			sizeof(uint32_t)*nvpages,
 			BUS_DMASYNC_POSTWRITE);
 
-	if (vsc->sc_features & VIRTIO_BALLOON_F_MUST_TELL_HOST)
+	if (vsc->sc_active_features & VIRTIO_BALLOON_F_MUST_TELL_HOST)
 		uvm_pglistfree(&b->bl_pglist);
 
 	sc->sc_inflight += nvpages;

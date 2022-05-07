@@ -62,7 +62,7 @@ struct vioscsi_softc {
 	u_int32_t		 sc_seg_max;
 };
 
-/*      
+/*
  * Each block request uses at least two segments - one for the header
  * and one for the status.
 */
@@ -95,7 +95,7 @@ vioscsi_match(device_t parent, cfdata_t match, void *aux)
 {
 	struct virtio_softc *va = aux;
 
-	if (va->sc_childdevid == PCI_PRODUCT_VIRTIO_SCSI)
+	if (va->sc_childdevid == VIRTIO_DEVICE_ID_SCSI)
 		return 1;
 	return 0;
 }
@@ -107,7 +107,7 @@ vioscsi_attach(device_t parent, device_t self, void *aux)
 	struct virtio_softc *vsc = device_private(parent);
 	struct scsipi_adapter *adapt = &sc->sc_adapter;
 	struct scsipi_channel *chan = &sc->sc_channel;
-	uint32_t features;
+	uint64_t features;
 	char buf[256];
 	int rv;
 
@@ -209,7 +209,7 @@ vioscsi_scsipi_request(struct scsipi_channel *chan, scsipi_adapter_req_t
 	struct vioscsi_softc *sc =
 	    device_private(chan->chan_adapter->adapt_dev);
 	struct virtio_softc *vsc = device_private(device_parent(sc->sc_dev));
-	struct scsipi_xfer *xs; 
+	struct scsipi_xfer *xs;
 	struct scsipi_periph *periph;
 	struct vioscsi_req *vr;
 	struct virtio_scsi_req_hdr *req;
@@ -222,7 +222,7 @@ vioscsi_scsipi_request(struct scsipi_channel *chan, scsipi_adapter_req_t
 		DPRINTF(("%s: unhandled %d\n", __func__, request));
 		return;
 	}
-	
+
 	xs = arg;
 	periph = xs->xs_periph;
 

@@ -4,7 +4,7 @@
 struct dev_info_t mmio_device_info_entries[128];
 int mmio_device_info_entry_index;
 
-void parse_mmio_device_configuration(char *cmdline)
+void rump_parse_mmio_device_configuration(char *cmdline)
 {   //
     // We are assuming the mmio devices information is appended to the
     // command line (at least it is the case with the firecracker) so

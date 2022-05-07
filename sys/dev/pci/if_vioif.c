@@ -279,9 +279,9 @@ CFATTACH_DECL_NEW(vioif, sizeof(struct vioif_softc),
 static int
 vioif_match(device_t parent, cfdata_t match, void *aux)
 {
-	struct virtio_softc *va = aux;
+	struct virtio_attach_args *va = aux;
 
-	if (va->sc_childdevid == PCI_PRODUCT_VIRTIO_NETWORK)
+	if (va->sc_childdevid == VIRTIO_DEVICE_ID_NETWORK)
 		return 1;
 
 	return 0;
@@ -439,7 +439,7 @@ vioif_alloc_mems(struct vioif_softc *sc)
 		C_L2(ctrl_cmd_dmamap, ctrl_cmd,
 		    sizeof(struct virtio_net_ctrl_cmd), 1, WRITE,
 		    "control command");
-	
+
 		/* control vq status */
 		C_L2(ctrl_status_dmamap, ctrl_status,
 		    sizeof(struct virtio_net_ctrl_status), 1, READ,
@@ -507,7 +507,7 @@ vioif_attach(device_t parent, device_t self, void *aux)
 {
 	struct vioif_softc *sc = device_private(self);
 	struct virtio_softc *vsc = device_private(parent);
-	uint32_t features;
+	uint64_t features;
 	char buf[256];
 	struct ifnet *ifp = &sc->sc_ethercom.ec_if;
 	u_int flags;
@@ -531,12 +531,12 @@ vioif_attach(device_t parent, device_t self, void *aux)
 	vsc->sc_flags = 0;
 
 #ifdef VIOIF_MPSAFE
-	vsc->sc_flags |= VIRTIO_F_PCI_INTR_MPSAFE;
+	vsc->sc_flags |= VIRTIO_F_INTR_MPSAFE;
 #endif
 #ifdef VIOIF_SOFTINT_INTR
-	vsc->sc_flags |= VIRTIO_F_PCI_INTR_SOFTINT;
+	vsc->sc_flags |= VIRTIO_F_INTR_SOFTINT;
 #endif
-	vsc->sc_flags |= VIRTIO_F_PCI_INTR_MSIX;
+	vsc->sc_flags |= VIRTIO_F_INTR_MSIX;
 
 	features = virtio_negotiate_features(vsc,
 					     (VIRTIO_NET_F_MAC |
@@ -763,7 +763,7 @@ vioif_stop(struct ifnet *ifp, int disable)
 		vioif_rx_drain(sc);
 
 	virtio_reinit_start(vsc);
-	virtio_negotiate_features(vsc, vsc->sc_features);
+	virtio_negotiate_features(vsc, vsc->sc_active_features);
 	virtio_start_vq_intr(vsc, &sc->sc_vq[VQ_RX]);
 	virtio_stop_vq_intr(vsc, &sc->sc_vq[VQ_TX]);
 	if (vsc->sc_nvqs >= 3)
@@ -1504,7 +1504,7 @@ vioif_updown(struct vioif_softc *sc, bool isup)
 {
 	struct virtio_softc *vsc = sc->sc_virtio;
 
-	if (!(vsc->sc_features & VIRTIO_NET_F_STATUS))
+	if (!(vsc->sc_active_features & VIRTIO_NET_F_STATUS))
 		return ENODEV;
 	virtio_write_device_config_1(vsc,
 				     VIRTIO_NET_CONFIG_STATUS,

@@ -64,10 +64,6 @@ static const char *virtio_device_name[] = {
 static void	virtio_init_vq(struct virtio_softc *,
 		    struct virtqueue *, const bool);
 
-CFATTACH_DECL3_NEW(virtio, sizeof(struct virtio_softc),
-    NULL, NULL, NULL, NULL,
-    NULL, NULL, DVF_DETACH_SHUTDOWN);
-
 void
 virtio_set_status(struct virtio_softc *sc, int status)
 {
@@ -138,19 +134,17 @@ virtio_reinit_end(struct virtio_softc *sc)
 /*
  * Feature negotiation.
  */
-uint64_t
+void
 virtio_negotiate_features(struct virtio_softc *sc, uint64_t guest_features)
 {
-    uint64_t r;
 	if (!(device_cfdata(sc->sc_dev)->cf_flags & 1) &&
 	    !(device_cfdata(sc->sc_child)->cf_flags & 1)) /* XXX */
 		guest_features |= VIRTIO_F_RING_INDIRECT_DESC;
-	r = sc->sc_ops->neg_features(sc, guest_features);
+	sc->sc_ops->neg_features(sc, guest_features);
 	if (sc->sc_active_features & VIRTIO_F_RING_INDIRECT_DESC)
 		sc->sc_indirect = true;
 	else
 		sc->sc_indirect = false;
-    return r;
 }
 
 

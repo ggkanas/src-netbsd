@@ -550,6 +550,7 @@ int
 WDECL(vf,printf)(FILE * __restrict fp, const CHAR_T * __restrict fmt0, va_list ap)
 {
 	int ret;
+    //write(2, "kawai\n", 6);
 
 	FLOCKFILE(fp);
 	ret = WDECL(__vf,printf_unlocked_l)(fp, _current_locale(), fmt0, ap);
@@ -562,6 +563,7 @@ WDECL(vf,printf_l)(FILE * __restrict fp, locale_t loc, const CHAR_T * __restrict
     va_list ap)
 {
 	int ret;
+    //write(2, "kawao\n", 6);
 
 	FLOCKFILE(fp);
 	ret = WDECL(__vf,printf_unlocked_l)(fp, loc, fmt0, ap);
@@ -1082,7 +1084,7 @@ reswitch:	switch (ch) {
 			}
 			if (dtoaresult == NULL)
 				goto oomem;
-			
+
 			if (prec < 0) {
 				_DIAGASSERT(__type_fit(int,
 				    dtoaend - dtoaresult));
@@ -1588,7 +1590,7 @@ oomem:
  * table, indexed by argument number, of pointers to each arguments.  The
  * initial argument table should be an array of STATIC_ARG_TBL_SIZE entries.
  * It will be replaces with a malloc-ed one if it overflows.
- */ 
+ */
 static int
 __find_arguments(const CHAR_T *fmt0, va_list ap, union arg **argtable)
 {
@@ -1679,7 +1681,7 @@ __find_arguments(const CHAR_T *fmt0, va_list ap, union arg **argtable)
 	memset(stattypetable, 0, sizeof(stattypetable));
 	typetable = stattypetable;
 	tablesize = STATIC_ARG_TBL_SIZE;
-	tablemax = 0; 
+	tablemax = 0;
 	nextarg = 1;
 	nitems = 1;
 
@@ -2010,8 +2012,8 @@ cvt(double value, int ndigits, int flags, char *sign, int *decpt, int ch,
 	if (ch == 'f') {
 		mode = 3;		/* ndigits after the decimal point */
 	} else {
-		/* To obtain ndigits after the decimal point for the 'e' 
-		 * and 'E' formats, round to ndigits + 1 significant 
+		/* To obtain ndigits after the decimal point for the 'e'
+		 * and 'E' formats, round to ndigits + 1 significant
 		 * figures.
 		 */
 		if (ch == 'e' || ch == 'E') {

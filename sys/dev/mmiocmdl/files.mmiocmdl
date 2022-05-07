@@ -1,0 +1,9 @@
+
+# MMIO through CommandLine
+#device	mmiocmdl {}
+#attach mmiocmdl at mainbus
+#file	dev/mmiocmdl/mmiocmdl.c	mmiocmdl
+
+#device virtio_mmiocmdl
+#attach virtio_mmiocmdl at mmiocmdl
+#file dev/mmiocmdl/virtio_mmiocmdl.c virtio_mmiocmdl

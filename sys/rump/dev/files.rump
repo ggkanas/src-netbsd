@@ -3,7 +3,7 @@
 
 version 20151112
 
-device mainbus { }: pcibus
+device mainbus { }: pcibus, mmiobus
 attach mainbus at root
 
 device ugenhc: usbus, usbroothub

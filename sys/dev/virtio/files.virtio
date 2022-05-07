@@ -1,0 +1,16 @@
+#	$NetBSD: files.virtio,v 1.4 2018/07/12 13:05:39 jakllsch Exp $
+
+# XXX the contents of the following included file should be moved here
+include "dev/pci/files.virtio"
+
+file	dev/virtio/virtio_mmio.c	virtio_mmio
+
+# MMIO through CommandLine
+
+device	mmiocmdl: mmiobus
+attach mmiocmdl at mainbus: mmiobus
+file	dev/virtio/mmiocmdl.c	mmiocmdl
+
+device virtio_mmiocmdl
+attach virtio_mmiocmdl at mmiocmdl
+file dev/virtio/virtio_mmiocmdl.c virtio_mmiocmdl
