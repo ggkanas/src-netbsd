@@ -4,6 +4,4 @@ include "conf/files"
 include "rump/dev/files.rump"
 include "dev/virtio/files.mmiocmdl"
 
-pseudo-root mainbus*
-
-mmiocmdl* at mainbus?
+pseudo-device mmiocmdl

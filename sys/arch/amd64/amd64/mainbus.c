@@ -320,20 +320,20 @@ mainbus_attach(device_t parent, device_t self, void *aux)
 		aprint_error_dev(self, "couldn't establish power handler\n");
     aprint_normal("wot\n");
     aprint_naive("wot?\n");
-#define MMIOCMDL
-#ifdef MMIOCDML
-    int mmio_present = mmiocmdl_probe();
-    //dgreg
-    struct mmiocmdl_attach_args maa;
-    maa.maa_dmat = &pci_bus_dma_tag;
-    maa.maa_bst = x86_bus_space_mem;
-    aprint_normal("hello?\n");
-    aprint_naive("hello?\n");
-    if(mmio_present) {
-        aprint_normal("hello?\n");
-        config_found_ia(self, "mmiocmdl", &maa, NULL)
-    }
-#endif //MMIOCDML
+// #define MMIOCMDL
+// #ifdef MMIOCDML
+//     int mmio_present = mmiocmdl_probe();
+//     //dgreg
+//     struct mmiocmdl_attach_args maa;
+//     maa.maa_dmat = &pci_bus_dma_tag;
+//     maa.maa_bst = x86_bus_space_mem;
+//     aprint_normal("hello?\n");
+//     aprint_naive("hello?\n");
+//     if(mmio_present) {
+//         aprint_normal("hello?\n");
+//         config_found_ia(self, "mmiocmdl", &maa, NULL)
+//     }
+// #endif //MMIOCDML
 }
 
 int

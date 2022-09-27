@@ -55,7 +55,7 @@ device-major seeprom   char 206		   seeprom
 device-major dtrace    char 207		   dtrace
 device-major spiflash  char 208 block 208  spiflash
 device-major lua       char 209            lua
-device-major mmiocmdl  char 210
+device-major mmiocmdl  char 210         mmiocmdl
 
 # NOTE:
 # The following ranges are reserved for devices that have historical MD
