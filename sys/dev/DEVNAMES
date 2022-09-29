@@ -904,7 +904,7 @@ mlx			MI
 mly			MI
 mmem			dreamcast
 mmiobus         amd64   Attribute
-mmiocmdl        amd64
+mmiocmdl        MI
 mms			bebox
 mms			dreamcast
 mms			i386

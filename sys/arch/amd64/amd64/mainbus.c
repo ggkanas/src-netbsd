@@ -149,21 +149,13 @@ mainbus_match(device_t parent, cfdata_t match, void *aux)
 	return 1;
 }
 
-static inline void
-outb(uint16_t port, uint8_t value)
-{
-
-        __asm__ __volatile__("outb %0, %1" :: "a"(value), "d"(port));
-}
-
 /*
  * Attach the mainbus.
  */
 void
 mainbus_attach(device_t parent, device_t self, void *aux)
 {
-    outb(0x3f8, 0x59);
-    outb(0x3f8, 0x0a);
+
 #if NPCI > 0 || NACPICA > 0 || NIPMI > 0
 	union mainbus_attach_args mba;
 #endif
@@ -318,8 +310,8 @@ mainbus_attach(device_t parent, device_t self, void *aux)
 
 	if (!pmf_device_register(self, NULL, NULL))
 		aprint_error_dev(self, "couldn't establish power handler\n");
-    aprint_normal("wot\n");
-    aprint_naive("wot?\n");
+    // aprint_normal("wot\n");
+    // aprint_naive("wot?\n");
 // #define MMIOCMDL
 // #ifdef MMIOCDML
 //     int mmio_present = mmiocmdl_probe();

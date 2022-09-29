@@ -53,18 +53,18 @@ RUMP_COMPONENT(RUMP_COMPONENT_DEV)
 }
 
 RUMP_COMPONENT(RUMP_COMPONENT_DEV_AFTERMAINBUS) {
-    int mmio_present = mmiocmdl_probe();
-    //dgreg
-    struct mmiocmdl_attach_args maa;
-    device_t mainbus;
-    //maa.maa_dmat = &pci_bus_dma_tag;
-    maa.maa_bst = 1; //x86_bus_space_mem;
-    mainbus = device_find_by_driver_unit("mainbus", 0);
-	if (!mainbus)
-		panic("no mainbus.  use maintaxi instead?");
-    if(mmio_present) {
-        aprint_normal("hello?\n");
-        //config_found_ia(mainbus, "mmiobus", &maa, NULL);
-        config_attach(mainbus, cfdata_ioconf_mmiocmdl, &maa, NULL);
-    }
+    // int mmio_present = mmiocmdl_probe();
+    // //dgreg
+    // struct mmiocmdl_attach_args maa;
+    // device_t mainbus;
+    // //maa.maa_dmat = &pci_bus_dma_tag;
+    // maa.maa_bst = 1; //x86_bus_space_mem;
+    // mainbus = device_find_by_driver_unit("mainbus", 0);
+	// if (!mainbus)
+	// 	panic("no mainbus.  use maintaxi instead?");
+    // if(mmio_present) {
+    //     aprint_normal("hello?\n");
+    //     //config_found_ia(mainbus, "mmiobus", &maa, NULL);
+    //     config_attach(mainbus, cfdata_ioconf_mmiocmdl, &maa, NULL);
+    // }
 }

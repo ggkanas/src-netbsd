@@ -370,11 +370,9 @@ config_init_component(struct cfdriver * const *cfdriverv,
 	const struct cfattachinit *cfattachv, struct cfdata *cfdatav)
 {
 	int error;
-    aprint_normal("0\n");
 	if ((error = frob_cfdrivervec(cfdriverv,
 	    config_cfdriver_attach, config_cfdriver_detach, "init", false))!= 0)
 		return error;
-    aprint_normal("1\n");
 	if ((error = frob_cfattachvec(cfattachv,
 	    config_cfattach_attach, config_cfattach_detach,
 	    "init", false)) != 0) {
@@ -382,7 +380,6 @@ config_init_component(struct cfdriver * const *cfdriverv,
 	            config_cfdriver_detach, NULL, "init rollback", true);
 		return error;
 	}
-    aprint_normal("2\n");
 	if ((error = config_cfdata_attach(cfdatav, 1)) != 0) {
 		frob_cfattachvec(cfattachv,
 		    config_cfattach_detach, NULL, "init rollback", true);
@@ -390,7 +387,6 @@ config_init_component(struct cfdriver * const *cfdriverv,
 	            config_cfdriver_detach, NULL, "init rollback", true);
 		return error;
 	}
-    aprint_normal("reached end %s\n", cfdatav->cf_name);
 
 	return 0;
 }
@@ -619,7 +615,7 @@ config_cfdriver_lookup(const char *name)
 	struct cfdriver *cd;
 
 	LIST_FOREACH(cd, &allcfdrivers, cd_list) {
-        if (STREQ(name, "mmiocmdl")) aprint_normal("cfdriver name %s\n", cd->cd_name);
+        // if (STREQ(name, "mmiocmdl")) aprint_normal("cfdriver name %s\n", cd->cd_name);
 		if (STREQ(cd->cd_name, name))
 			return cd;
 	}
@@ -1368,19 +1364,16 @@ config_devalloc(const device_t parent, const cfdata_t cf, const int *locs)
 
 	cd = config_cfdriver_lookup(cf->cf_name);
 	if (cd == NULL)
-        { aprint_normal("no cf name\n");
+        {
 		return NULL;
     }
 
-    aprint_normal("cf name is %s\n", cf->cf_name);
 
 	ca = config_cfattach_lookup_cd(cd, cf->cf_atname);
 	if (ca == NULL)
-    { aprint_normal("no cf at name\n");
+    {
 		return NULL;
     }
-
-    aprint_normal("cf at name is %s\n", cf->cf_name);
 
 	/* get memory for all device vars */
 	KASSERTMSG((ca->ca_flags & DVF_PRIV_ALLOC)
@@ -1422,8 +1415,6 @@ config_devalloc(const device_t parent, const cfdata_t cf, const int *locs)
 		config_devfree(dev);
 		return NULL;
 	}
-
-    aprint_normal("hot here\n");
 
 	/* compute length of name and decimal expansion of unit number */
 	lname = strlen(cd->cd_name);

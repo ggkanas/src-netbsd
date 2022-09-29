@@ -8,7 +8,7 @@ COMMENT=MMIO through CommandLine
 IOCONF=	MMIOCMDL.ioconf
 #RUMP_COMPONENT=ioconf
 
-SRCS+=	mmiocmdl.c mmiocmdl_cfdata.c
+SRCS+=	mmiocmdl.c #mmiocmdl_cfdata.c
 
 CPPFLAGS+= -I${RUMPTOP}/librump/rumpkern
 
