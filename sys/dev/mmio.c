@@ -1,5 +1,8 @@
 #include <sys/types.h>
 #include <sys/malloc.h>
+// #include <stdio.h>
+// #include <stdlib.h>
+// #include <string.h>
 
 #include <dev/mmio.h>
 #include <dev/pci/virtiovar.h>
@@ -227,9 +230,9 @@ struct dev_info_t* parse_mmio_device_info(char *cmdline)
     }
 
     uint64_t irq = 0, address = 0;
-    //if (sscanf(at_pos, "@%lli:%u", &address, &irq) != 2)
+    // if (sscanf(at_pos, "@%lli:%u", &address, &irq) != 2)
     //    return NULL;
-    address = 0xd0000000;
+    address = 0x1ff40000;
     irq = 5;
 
     // Find first white-character or null as an end of device description

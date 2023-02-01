@@ -263,4 +263,6 @@ uint16_t virtio_rw16(struct virtio_softc *sc, uint16_t val);
 uint32_t virtio_rw32(struct virtio_softc *sc, uint32_t val);
 uint64_t virtio_rw64(struct virtio_softc *sc, uint64_t val);
 
+void virtioattach(int);
+
 #endif /* _DEV_PCI_VIRTIOVAR_H_ */

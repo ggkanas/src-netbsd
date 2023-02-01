@@ -169,7 +169,7 @@ virtio_mmio_common_attach(struct virtio_mmio_softc *sc)
 	aprint_normal("1.2");
 
 	ver = bus_space_read_4(sc->sc_iot, sc->sc_ioh, VIRTIO_MMIO_VERSION);
-	if (ver != 1 && ver != 2) {
+	if (ver != 1) {
 		aprint_error_dev(vsc->sc_dev,
 		    "unknown version 0x%02x; giving up\n", ver);
 		return;
@@ -245,7 +245,6 @@ virtio_mmio_negotiate_features(struct virtio_softc *vsc, uint64_t
 	struct virtio_mmio_softc *sc = (struct virtio_mmio_softc *)vsc;
 	uint32_t r;
 
-	//4
 	bus_space_write_4(sc->sc_iot, sc->sc_ioh,
 	    VIRTIO_MMIO_HOST_FEATURES_SEL, 0);
 	r = bus_space_read_4(sc->sc_iot, sc->sc_ioh,
@@ -255,11 +254,6 @@ virtio_mmio_negotiate_features(struct virtio_softc *vsc, uint64_t
 	    VIRTIO_MMIO_GUEST_FEATURES_SEL, 0);
 	bus_space_write_4(sc->sc_iot, sc->sc_ioh,
 			  VIRTIO_MMIO_GUEST_FEATURES, r);
-	//5
-	// virtio_mmio_set_status(vsc, VIRTIO_CONFIG_DEVICE_STATUS_FEATURES_OK);
-	// int status = bus_space_read_4(sc->sc_iot, sc->sc_ioh,
-	// 			       VIRTIO_MMIO_STATUS);
-	// if(status|VIRTIO_CONFIG_DEVICE_STATUS_FEATURES_OK >> VIRTIO_CONFIG_DEVICE_STATUS_FEATURES_OK) return 0;
 
 	vsc->sc_active_features = r;
     return r;

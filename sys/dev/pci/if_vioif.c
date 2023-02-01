@@ -280,9 +280,13 @@ static int
 vioif_match(device_t parent, cfdata_t match, void *aux)
 {
 	struct virtio_attach_args *va = aux;
+	aprint_normal("vioif match\n");
 
-	if (va->sc_childdevid == VIRTIO_DEVICE_ID_NETWORK)
+	aprint_normal("%d, %d\n", va->sc_childdevid, VIRTIO_DEVICE_ID_NETWORK);
+	if (va->sc_childdevid == VIRTIO_DEVICE_ID_NETWORK) {
 		return 1;
+	}
+		
 
 	return 0;
 }

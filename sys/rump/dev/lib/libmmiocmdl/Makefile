@@ -1,6 +1,6 @@
 RUMPTOP=${TOPRUMP}
 
-.PATH:	${RUMPTOP}/../dev/virtio
+.PATH:	${RUMPTOP}/../arch/amd64/amd64/mmiocmdl
 
 LIB=	rumpdev_mmiocmdl
 COMMENT=MMIO through CommandLine
@@ -8,7 +8,19 @@ COMMENT=MMIO through CommandLine
 IOCONF=	MMIOCMDL.ioconf
 #RUMP_COMPONENT=ioconf
 
-SRCS+=	mmiocmdl.c #mmiocmdl_cfdata.c
+SRCS+=	mmiocmdl.c mmiocmdl_cfdata.c
+
+# .PATH:	${RUMPTOP}/../arch/x86/x86
+
+# SRCS+= i8259.c intr.c
+
+.PATH:	${RUMPTOP}/../dev
+
+SRCS+= mmio-api.c mmio.c 
+
+.PATH:	${RUMPTOP}/../dev/virtio
+
+SRCS+= virtio_mmio.c
 
 CPPFLAGS+= -I${RUMPTOP}/librump/rumpkern
 

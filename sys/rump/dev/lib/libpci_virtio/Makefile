@@ -9,9 +9,10 @@ LIB=	rumpdev_pci_virtio
 COMMENT=VirtIO bus support
 
 IOCONF=	PCI_VIRTIO.ioconf
-#RUMP_COMPONENT=ioconf
+# RUMP_COMPONENT=ioconf
 
 SRCS+=	virtio.c
+#virtio_component.c
 
 CPPFLAGS+= -I${RUMPTOP}/librump/rumpkern
 

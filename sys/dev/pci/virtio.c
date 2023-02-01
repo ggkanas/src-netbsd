@@ -38,6 +38,7 @@ __KERNEL_RCSID(0, "$NetBSD: virtio.c,v 1.53 2021/10/28 01:36:43 yamaguchi Exp $"
 #include <sys/device.h>
 #include <sys/kmem.h>
 #include <sys/module.h>
+#include <sys/conf.h>
 
 #define VIRTIO_PRIVATE
 
@@ -1346,6 +1347,7 @@ virtio_print_device_type(device_t self, int id, int revision)
 		  revision);
 }
 
+// CFDRIVER_DECL(virtio, DV_DULL, NULL);
 
 MODULE(MODULE_CLASS_DRIVER, virtio, NULL);
 
@@ -1376,3 +1378,18 @@ virtio_modcmd(modcmd_t cmd, void *opaque)
 
 	return error;
 }
+
+// const struct cdevsw virtio_cdevsw = {
+// 	.d_open = noopen,
+// 	.d_close = nullclose,
+// 	.d_read = noread,
+// 	.d_write = nowrite,
+// 	.d_ioctl = noioctl,
+// 	.d_stop = nostop,
+// 	.d_tty = notty,
+// 	.d_poll = nopoll,
+// 	.d_mmap = nommap,
+// 	.d_kqfilter = nokqfilter,
+// 	.d_discard = nodiscard,
+// 	.d_flag = D_OTHER
+// };

@@ -6,8 +6,9 @@ ioconf virtio
 include "conf/files"
 include "dev/pci/files.pci"
 include "rump/dev/files.rump"
+include "dev/mmiocmdl/files.mmiocmdl"
 
 pseudo-root pci*
 
 virtio* at pci? dev ? function ?        # Virtio PCI device
-virtio* at mainbus?                 #Virtio MMIO device
+#virtio* at mmiocmdl                     #Virtio MMIO device

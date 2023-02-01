@@ -1124,6 +1124,7 @@ device  sisfb: wsemuldisplaydev, rasops8, rasops15, rasops16, rasops32, vcons
 attach  sisfb at pci
 file    dev/pci/sisfb.c		sisfb	needs-flag
 
+include "dev/pci/files.virtio"
 # VirtIO
 device	virtio {}
 attach	virtio at pci
@@ -1137,7 +1138,7 @@ attach	viomb at virtio
 file	dev/pci/viomb.c		viomb
 
 device	vioif: ether, ifnet, arp
-attach	vioif at virtio
+attach	vioif at mmiocmdl
 file	dev/pci/if_vioif.c	vioif
 
 device	viornd

@@ -3,6 +3,8 @@
 
 version 20151112
 
+include "dev/conf/files"
+
 device mainbus { }: pcibus, mmiobus
 attach mainbus at root
 

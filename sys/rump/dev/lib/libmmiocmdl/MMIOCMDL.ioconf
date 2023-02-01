@@ -1,7 +1,9 @@
 ioconf mmiocmdl
 
 include "conf/files"
+include "arch/amd64/amd64/mmiocmdl/files.mmiocmdl"
 include "rump/dev/files.rump"
-include "dev/virtio/files.mmiocmdl"
 
-pseudo-device mmiocmdl
+mmiocmdl* at root
+
+

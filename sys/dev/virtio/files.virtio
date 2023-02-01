@@ -7,9 +7,9 @@ file	dev/virtio/virtio_mmio.c	virtio_mmio
 
 # MMIO through CommandLine
 
-device	mmiocmdl: mmiobus
-attach mmiocmdl at mainbus: mmiobus
-file	dev/virtio/mmiocmdl.c	mmiocmdl
+#device	mmiocmdl: mmiobus
+#attach mmiocmdl at mainbus: mmiobus
+#file	dev/virtio/mmiocmdl.c	mmiocmdl
 
 device virtio_mmiocmdl
 attach virtio_mmiocmdl at mmiocmdl

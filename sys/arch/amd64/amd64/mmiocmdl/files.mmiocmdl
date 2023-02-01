@@ -1,0 +1,15 @@
+
+# MMIO through CommandLine
+#device	mmiocmdl: mmiobus
+#attach mmiocmdl at root
+#pseudo-device mmiocmdl
+#file	dev/mmiocmdl/mmiocmdl.c	mmiocmdl needs-flag
+
+
+device mmiocmdl {}          # MMIOcmdl "bus" attachment
+attach mmiocmdl at root
+file dev/mmiocmdl/mmiocmdl.c    mmiocmdl
+
+#device virtio_mmiocmdl
+#attach virtio_mmiocmdl at mmiocmdl
+#file dev/mmiocmdl/virtio_mmiocmdl.c virtio_mmiocmdl

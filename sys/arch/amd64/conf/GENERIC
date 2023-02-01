@@ -1,0 +1,3 @@
+
+ioapic* at mainbus?
+#pseudo-device mmiocmdl

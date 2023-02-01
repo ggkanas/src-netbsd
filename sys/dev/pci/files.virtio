@@ -2,7 +2,10 @@
 
 # VirtIO
 device	virtio {}
+attach virtio at pci
 file	dev/pci/virtio.c	virtio
+# with mmiocmdl: virtio_mmio
+#file dev/mmiocmdl/mmiocmdl.c mmiocmdl
 
 attach	ld at virtio with ld_virtio
 file	dev/pci/ld_virtio.c	ld_virtio
@@ -12,7 +15,7 @@ attach	viomb at virtio
 file	dev/pci/viomb.c		viomb
 
 device	vioif: ether, ifnet, arp
-attach	vioif at virtio
+attach	vioif at mmiocmdl
 file	dev/pci/if_vioif.c	vioif
 
 device	viornd
