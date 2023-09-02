@@ -10,9 +10,7 @@ IOCONF=	MMIOCMDL.ioconf
 
 SRCS+=	mmiocmdl.c mmiocmdl_cfdata.c
 
-# .PATH:	${RUMPTOP}/../arch/x86/x86
-
-# SRCS+= i8259.c intr.c
+.PATH:	${RUMPTOP}/../arch/x86/x86
 
 .PATH:	${RUMPTOP}/../dev
 

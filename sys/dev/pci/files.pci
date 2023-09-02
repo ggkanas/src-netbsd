@@ -1130,8 +1130,11 @@ device	virtio {}
 attach	virtio at pci
 file	dev/pci/virtio.c	virtio
 
-attach	ld at virtio with ld_virtio
+attach	ld at mmiocmdl with ld_virtio
 file	dev/pci/ld_virtio.c	ld_virtio
+
+attach	ld at mmiocmdl with ld_virtio_mmio
+file	dev/pci/ld_virtio.c	ld_virtio_mmio
 
 device	viomb
 attach	viomb at virtio

@@ -36,6 +36,7 @@ struct virtio_mmio_softc {
 	bus_space_tag_t		sc_iot;
 	bus_space_handle_t	sc_ioh;
 	bus_size_t		sc_iosize;
+	int				sc_virtio_version;
 
 	void			*sc_ih;
 

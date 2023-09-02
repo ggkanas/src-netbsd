@@ -1371,6 +1371,7 @@ int rump___sysimpl_connect(int, const struct sockaddr *, socklen_t);
 int
 rump___sysimpl_connect(int s, const struct sockaddr * name, socklen_t namelen)
 {
+
 	register_t retval[2];
 	int error = 0;
 	int rv = -1;
@@ -1381,6 +1382,7 @@ rump___sysimpl_connect(int s, const struct sockaddr * name, socklen_t namelen)
 	SPARG(&callarg, name) = name;
 	SPARG(&callarg, namelen) = namelen;
 
+	
 	error = rsys_syscall(SYS_connect, &callarg, sizeof(callarg), retval);
 	rsys_seterrno(error);
 	if (error == 0) {

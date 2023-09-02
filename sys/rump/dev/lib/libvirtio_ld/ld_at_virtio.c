@@ -34,11 +34,58 @@ __KERNEL_RCSID(0, "$NetBSD: ld_at_virtio.c,v 1.3 2016/01/26 23:12:16 pooka Exp $
 #include <sys/bus.h>
 #include <sys/stat.h>
 #include <sys/disklabel.h>
+#include <sys/mount.h>
 
 #include <rump-sys/kern.h>
 #include <rump-sys/vfs.h>
 
-#include "ioconf.c"
+// #include "ioconf.c"
+
+#include "ioconf.h"
+#define IOCONF virtio_ld
+
+
+
+
+// static const struct cfiattrdata mmiocmdlcf_iattrdata = {
+// 	"mmiocmdl", 0, {
+// 		{ NULL, NULL, 0 },
+// 	}
+// };
+
+CFDRIVER_DECL(ld, DV_DISK, NULL);
+
+
+static struct cfdriver * const cfdriver_ioconf_virtio_ld[] = {
+	&ld_cd,
+	NULL
+};
+
+extern struct cfattach ld_virtio_ca;
+
+static const struct cfparent pspec0 = {
+	"mmiocmdl", "mmiocmdl", DVUNIT_ANY
+};
+
+#define NORM FSTATE_NOTFOUND
+#define STAR FSTATE_STAR
+
+static struct cfdata cfdata_ioconf_virtio_ld[] = {
+    /* driver           attachment    unit state      loc   flags  pspec */
+/*  0: ld* at virtio? */
+    { "ld",		"ld_virtio",	 0, STAR,    NULL,      0, &pspec0 },
+    { NULL,		NULL,		 0,    0,    NULL,      0, NULL }
+};
+
+static struct cfattach * const ld_cfattachinit[] = {
+	&ld_virtio_ca, NULL
+};
+
+static const struct cfattachinit cfattach_ioconf_virtio_ld[] = {
+	{ "ld", ld_cfattachinit },
+	{ NULL, NULL }
+};
+
 
 RUMP_COMPONENT(RUMP_COMPONENT_DEV)
 {

@@ -681,7 +681,7 @@ virtio_alloc_vq(struct virtio_softc *sc, struct virtqueue *vq, int index,
 				 ~(VIRTIO_PAGE_SIZE-1))
 
 	/* Make sure callers allocate vqs in order */
-	KASSERT(sc->sc_nvqs == index);
+	KASSERT(sc->sc_nvqs  == index);
 
 	memset(vq, 0, sizeof(*vq));
 

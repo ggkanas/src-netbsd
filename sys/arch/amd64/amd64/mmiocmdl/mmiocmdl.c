@@ -41,9 +41,6 @@ __KERNEL_RCSID(0, "$NetBSD: virtio_mmiocmdl.c,v 1.10 2021/10/22 02:57:23 yamaguc
 #include <sys/kauth.h>
 #include <sys/kmem.h>
 #include <sys/malloc.h>
-#include <machine/intr.h>
-#include <machine/i8259.h>
-#include <machine/pic.h>
 
 #include <dev/mmio.h>
 #include <machine/mmiocmdl/mmiocmdlvar.h>
@@ -108,22 +105,15 @@ mmiocmdl_attach(device_t parent, device_t self, void * aux)
 
     msc->sc_alloc_interrupts = mmiocmdl_alloc_interrupts;
     msc->sc_free_interrupts = mmiocmdl_free_interrupts;
-    aprint_normal("1\n");
 
 
     virtio_mmio_common_attach(msc);
-    aprint_normal("2\n");
 
     mmiocmdl_rescan(self, "virtio", NULL);
 
-    aprint_normal("mmiocmdl attach\n");
-
-    aprint_normal("virtual %p\n", &self);
-    aprint_normal("physical %p\n", (void*)vtophys((vaddr_t)&self));
-
-    for (int i = 0; i < mmio_device_info_entry_index; ++i)
-        //config_found(self, aux, NULL);
-        aprint_normal("found mmio\n");
+//     for (int i = 0; i < mmio_device_info_entry_index; ++i)
+//         //config_found(self, aux, NULL);
+//         aprint_normal("found mmio\n");
 }
 
 
@@ -146,13 +136,10 @@ mmiocmdl_rescan(device_t self, const char *ifattr, const int *locs) {
     struct virtio_softc * const vsc = &msc->sc_sc;
     struct virtio_attach_args va;
 
-    aprint_normal("3\n");
     if (vsc->sc_child) return 0;
 
-    aprint_normal("4\n");
     memset(&va, 0, sizeof(va));
     va.sc_childdevid = vsc->sc_childdevid;
-    aprint_normal("5: %d\n", vsc->sc_childdevid);
     // cfdata_t cf = config_search_ia(NULL, self, "virtio", &va);
     // config_attach(self, cf, &va, NULL);
      
@@ -175,29 +162,28 @@ mmiocmdl_rescan(device_t self, const char *ifattr, const int *locs) {
     // config_found_sm_loc(self, NULL, NULL, &va, NULL, match_child);
     config_found(self, &va, NULL);
     // if (vioif_ca.ca_match(self, NULL, vsc)) vioif_ca.ca_attach(self)
-    aprint_normal("6\n");
     if(virtio_attach_failed(vsc)) return 0;
-    aprint_normal("7\n");
     return 0;
 }
 
 void
 mmiocmdlattach(int num)
 {
-    int error;
+    // int error;
 
     // error = config_cfdriver_attach(&mmiocmdl_cd);
     // if (error) {
     //     aprint_error("%s: unable to register cfdriver, error = %d\n",
     //         mmiocmdl_cd.cd_name, error);
     // }
-	error = config_cfattach_attach(mmiocmdl_cd.cd_name, &mmiocmdl_ca);
-	if (error) {
-		aprint_error("%s: unable to register cfattach, error = %d\n",
-		    mmiocmdl_cd.cd_name, error);
-    }
+	// error = config_cfattach_attach(mmiocmdl_cd.cd_name, &mmiocmdl_ca);
+	// if (error) {
+	// 	aprint_error("%s: unable to register cfattach, error = %d\n",
+	// 	    mmiocmdl_cd.cd_name, error);
+    // }
     // struct mmiocmdl_attach_args* aux = kmem_zalloc(sizeof(struct mmiocmdl_attach_args), KM_SLEEP);
     // cfdata_t cf = config_search_ia(NULL, NULL, "mmiocmdl", aux);
+    config_rootfound("mmiocmdl", NULL);
     cfdata_t cf = malloc(sizeof(*cf), M_DEVBUF, M_WAITOK);
 		cf->cf_name = mmiocmdl_cd.cd_name;
 		cf->cf_atname = mmiocmdl_cd.cd_name;
@@ -209,11 +195,26 @@ mmiocmdlattach(int num)
     
 }
 
+// extern void bmk_isr_rumpkernel(int (*)(void *), void *, int, int);
+extern void *rumpcomp_pci_irq_establish(unsigned, int (*)(void *), void *);
+extern void *rumpcomp_irq_establish(int, int (*)(void *), void *);
+extern int rumpcomp_pci_irq_map(unsigned bus, unsigned device, unsigned fun, int intrline, unsigned cookie);
+
+
+
 static int
 mmiocmdl_alloc_interrupts(struct virtio_mmio_softc *msc)
 {
 	// struct mmiocmdl_softc * const sc = (struct mmiocmdl_softc *)msc;
-	// struct virtio_softc * const vsc = &msc->sc_sc;
+	struct virtio_softc * const vsc = &msc->sc_sc;
+
+    // bmk_isr_rumpkernel(virtio_mmio_intr, (void*)msc, 5, 0);
+    
+    // rumpcomp_pci_irq_map(0, 0, 0, 5, 0);
+    rumpcomp_irq_establish(5, virtio_mmio_intr, (void*)msc);
+    msc->sc_ih = virtio_vq_intr;
+    vsc->sc_intrhand = virtio_vq_intr;
+    vsc->sc_finished_called = true;
 
     // // struct acpi_irq *irq = kmem_zalloc(sizeof(struct acpi_irq), KM_SLEEP);
     // // acpi_irq->ar_irq = 5;
@@ -221,12 +222,15 @@ mmiocmdl_alloc_interrupts(struct virtio_mmio_softc *msc)
 	// msc->sc_ih = intr_establish_xname(5,  &i8259_pic, 0, IST_EDGE,
     //     IPL_VM, virtio_mmio_intr,
     //         msc, false, device_xname(vsc->sc_dev));
-	// if (msc->sc_ih == NULL) {
-	// 	aprint_error_dev(vsc->sc_dev, "couldn't install interrupt handler\n");
-	// 	return -1;
-	// }
+	if (msc->sc_ih == NULL) {
+		aprint_error_dev(vsc->sc_dev, "couldn't install interrupt handler\n");
+		return -1;
+	}
 
-	// aprint_normal_dev(vsc->sc_dev, "interrupting on irq %d\n", sc->sc_irq);
+    // msc->sc_irq = 5;
+	aprint_normal_dev(vsc->sc_dev, "interrupting on irq %d\n", 5);
+
+    // asm("int $0x05;");
 
 	return 0;
 }

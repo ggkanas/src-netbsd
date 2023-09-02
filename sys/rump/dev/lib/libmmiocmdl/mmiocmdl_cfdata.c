@@ -49,6 +49,7 @@ RUMP_COMPONENT(RUMP_COMPONENT_DEV)
     config_init_component(cfdriver_ioconf_mmiocmdl,
         cfattach_ioconf_mmiocmdl, cfdata_ioconf_mmiocmdl);
 
+    config_rootfound("mmiocmdl", NULL);
 	rump_pdev_add(mmiocmdlattach, 4);
     
 
