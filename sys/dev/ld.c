@@ -287,7 +287,6 @@ ld_shutdown(device_t dev, int flags)
 static int
 ldopen(dev_t dev, int flags, int fmt, struct lwp *l)
 {
-
 	struct ld_softc *sc;
 	struct dk_softc *dksc;
 	int unit;
@@ -297,7 +296,6 @@ ldopen(dev_t dev, int flags, int fmt, struct lwp *l)
 		return (ENXIO);
 	dksc = &sc->sc_dksc;
 
-	aprint_normal("ldopen\n");
 	return dk_open(dksc, dev, flags, fmt, l);
 }
 

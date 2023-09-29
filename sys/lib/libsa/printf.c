@@ -47,7 +47,10 @@ outb(__uint16_t port, __uint8_t value)
 void
 printf(const char *fmt, ...)
 {
+    outb(0x3f8, 0x58);
+    outb(0x3f8, 0x0a);
 	va_list ap;
+    //write(2, "kawal\n", 6);
 
 	va_start(ap, fmt);
 	vprintf(fmt, ap);

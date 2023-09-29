@@ -135,9 +135,9 @@
 #include <sys/cdefs.h>
 __KERNEL_RCSID(0, "$NetBSD: intr.c,v 1.94 2016/07/11 23:09:34 knakahara Exp $");
 
-// #include "opt_intrdebug.h"
-// #include "opt_multiprocessor.h"
-// #include "opt_acpi.h"
+#include "opt_intrdebug.h"
+#include "opt_multiprocessor.h"
+#include "opt_acpi.h"
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -161,13 +161,10 @@ __KERNEL_RCSID(0, "$NetBSD: intr.c,v 1.94 2016/07/11 23:09:34 knakahara Exp $");
 #include <machine/i8259.h>
 #include <machine/pio.h>
 
-// #include "ioapic.h"
-// #include "lapic.h"
-// #include "pci.h"
-// #include <sys/pci.h>
-#include "dev/acpi/acpica.h"
-
-
+#include "ioapic.h"
+#include "lapic.h"
+#include "pci.h"
+#include "acpica.h"
 
 #if NIOAPIC > 0 || NACPICA > 0
 #include <machine/i82093var.h> 
@@ -183,8 +180,8 @@ __KERNEL_RCSID(0, "$NetBSD: intr.c,v 1.94 2016/07/11 23:09:34 knakahara Exp $");
 #include <dev/pci/ppbreg.h>
 #endif
 
-// #include <x86/pci/msipic.h>
-// #include <x86/pci/pci_msi_machdep.h>
+#include <x86/pci/msipic.h>
+#include <x86/pci/pci_msi_machdep.h>
 
 #if NPCI == 0
 #define msipic_is_msi_pic(PIC)	(false)
@@ -1229,7 +1226,7 @@ legacy_intr_string(int ih, char *buf, size_t len, struct pic *pic)
 	KASSERT(pic->pic_type == PIC_I8259);
 	KASSERT(APIC_IRQ_ISLEGACY(ih));
 
-	legacy_irq = (int)((ih) & 0xff);
+	legacy_irq = APIC_IRQ_LEGACY_IRQ(ih);
 	KASSERT(legacy_irq >= 0 && legacy_irq < 16);
 
 	snprintf(buf, len, "%s pin %d", pic->pic_name, legacy_irq);
@@ -1258,13 +1255,13 @@ intr_string(intr_handle_t ih, char *buf, size_t len)
 			    "apic %d int %d (irq %d)",
 			    APIC_IRQ_APIC(ih),
 			    APIC_IRQ_PIN(ih),
-			    (int)((ih) & 0xff));
+			    APIC_IRQ_LEGACY_IRQ(ih));
 		}
 	} else
-		snprintf(buf, len, "irq %d", (int)((ih) & 0xff));
+		snprintf(buf, len, "irq %d", APIC_IRQ_LEGACY_IRQ(ih));
 #else
 
-	snprintf(buf, len, "irq %d", APIC_IRQ_LEGACY_IRQ(ih));
+	snprintf(buf, len, "irq %d" APIC_IRQ_LEGACY_IRQ(ih));
 #endif
 	return buf;
 

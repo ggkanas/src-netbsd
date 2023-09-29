@@ -133,15 +133,13 @@ static int	ld_virtio_detach(device_t, int);
 CFATTACH_DECL_NEW(ld_virtio, sizeof(struct ld_virtio_softc),
     ld_virtio_match, ld_virtio_attach, ld_virtio_detach, NULL);
 
-
 static int
 ld_virtio_match(device_t parent, cfdata_t match, void *aux)
 {
-	struct virtio_attach_args *va = aux;
+	struct virtio_softc *va = aux;
 
-	if (va->sc_childdevid == VIRTIO_DEVICE_ID_BLOCK) {
+	if (va->sc_childdevid == VIRTIO_DEVICE_ID_BLOCK)
 		return 1;
-	}
 
 	return 0;
 }

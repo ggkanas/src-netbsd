@@ -59,6 +59,8 @@ outb(__uint16_t port, __uint8_t value)
 int
 printf(char const *fmt, ...)
 {
+    outb(0x3f8, 0x5a);
+    outb(0x3f8, 0x0a);
 	int ret;
 	va_list ap;
     //write(2, "kawab\n", 6);
