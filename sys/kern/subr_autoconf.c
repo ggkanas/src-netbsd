@@ -763,21 +763,17 @@ static const struct cfiattrdata *
 cfdriver_get_iattr(const struct cfdriver *cd, const char *ia)
 {
 	const struct cfiattrdata * const *cpp;
-	// aprint_normal("yeesh\n");
 	if (cd->cd_attrs == NULL)
 		return 0;
 	// aprint_normal("cfp iattr: %s\n", ia);
 	for (cpp = cd->cd_attrs; *cpp; cpp++) {
-		// aprint_normal("yeep ");
 		// aprint_normal("%s\n", (*cpp)->ci_name);
 		
 		if (STREQ((*cpp)->ci_name, ia)) {
-			// aprint_normal("yikes\n");
 			/* Match. */
 			return *cpp;
 		}
 	}
-	// aprint_normal("yeet\n");
 	return 0;
 }
 
@@ -815,10 +811,8 @@ cfparent_match(const device_t parent, const struct cfparent *cfp)
 	if (cfp == NULL)
 		return 0;
 
-	// aprint_normal("no?\n");
 	pcd = parent->dv_cfdriver;
 	KASSERT(pcd != NULL);
-	// aprint_normal("no?\n");
 
 	/*
 	 * First, ensure this parent has the correct interface
@@ -826,7 +820,6 @@ cfparent_match(const device_t parent, const struct cfparent *cfp)
 	 */
 	if (!cfdriver_get_iattr(pcd, cfp->cfp_iattr))
 		return 0;
-	// aprint_normal("hello?\n");
 	/*
 	 * If no specific parent device instance was specified (i.e.
 	 * we're attaching to the attribute only), we're done!
@@ -840,14 +833,12 @@ cfparent_match(const device_t parent, const struct cfparent *cfp)
 	 */
 	if (STREQ(pcd->cd_name, cfp->cfp_parent) == 0)
 		return 0;	/* not the same parent */
-	// aprint_normal("hello?\n");
 	/*
 	 * Make sure the unit number matches.
 	 */
 	if (cfp->cfp_unit == DVUNIT_ANY ||	/* wildcard */
 	    cfp->cfp_unit == parent->dv_unit)
 		return 1;
-	// aprint_normal("hello?\n");
 
 	/* Unit numbers don't match. */
 	return 0;
@@ -969,14 +960,12 @@ config_match(device_t parent, cfdata_t cf, void *aux)
 {
 	struct cfattach *ca;
 
-	aprint_normal("config_match %s, %s\n", cf->cf_name, cf->cf_atname);
+	// aprint_normal("config_match %s, %s\n", cf->cf_name, cf->cf_atname);
 	ca = config_cfattach_lookup(cf->cf_name, cf->cf_atname);
 	if (ca == NULL) {
-		aprint_normal("oops\n");
 		/* No attachment for this entry, oh well. */
 		return 0;
 	}
-	aprint_normal("hey?\n");
 
 	return (*ca->ca_match)(parent, cf, aux);
 }
@@ -1040,11 +1029,10 @@ config_search_loc(cfsubmatch_t fn, device_t parent,
 			// if(STREQ(cf->cf_name, "vioif"))
 			// 	aprint_normal("%s\n", cf->cf_pspec->cfp_parent);
 			if (cfparent_match(parent, cf->cf_pspec)) {
-				aprint_normal("yeep %s\n", cf->cf_name);
+				// aprint_normal("yeep %s\n", cf->cf_name);
 			
 				mapply(&m, cf);
 			}
-			// aprint_normal("ya\n");
 		}
 	}
 	return m.match;
