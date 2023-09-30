@@ -550,7 +550,6 @@ int
 WDECL(vf,printf)(FILE * __restrict fp, const CHAR_T * __restrict fmt0, va_list ap)
 {
 	int ret;
-    //write(2, "kawai\n", 6);
 
 	FLOCKFILE(fp);
 	ret = WDECL(__vf,printf_unlocked_l)(fp, _current_locale(), fmt0, ap);
@@ -563,7 +562,6 @@ WDECL(vf,printf_l)(FILE * __restrict fp, locale_t loc, const CHAR_T * __restrict
     va_list ap)
 {
 	int ret;
-    //write(2, "kawao\n", 6);
 
 	FLOCKFILE(fp);
 	ret = WDECL(__vf,printf_unlocked_l)(fp, loc, fmt0, ap);

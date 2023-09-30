@@ -54,7 +54,6 @@ vprintf(const char *fmt, va_list ap)
 {
 
 	_DIAGASSERT(fmt != NULL);
-    //write(2, "kawas\n", 6);
 	return vfprintf(stdout, fmt, ap);
 }
 

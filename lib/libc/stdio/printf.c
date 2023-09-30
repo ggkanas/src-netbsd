@@ -66,7 +66,6 @@ printf_l(locale_t loc, char const *fmt, ...)
 {
 	int ret;
 	va_list ap;
-    //write(2, "kawar\n", 6);
 
 	va_start(ap, fmt);
 	ret = vfprintf_l(stdout, loc, fmt, ap);
