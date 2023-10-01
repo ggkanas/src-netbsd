@@ -101,6 +101,7 @@ mmiocmdl_attach(device_t parent, device_t self, void * aux)
 
     addr = (bus_addr_t)mmio_device_info_entries[0].address;
     size = (bus_size_t)mmio_device_info_entries[0].size;
+    sc->sc_irq = mmio_device_info_entries[0].irq_no;
 
     sc->sc_phandle = addr;
     msc->sc_iot = (bus_space_tag_t)1; //x86_bus_space_mem
@@ -184,6 +185,7 @@ mmiocmdl_rescan(device_t self, const char *ifattr, const int *locs) {
     config_found(self, &va, NULL);
     // if (vioif_ca.ca_match(self, NULL, vsc)) vioif_ca.ca_attach(self)
     aprint_normal("6\n");
+    virtio_child_attach_finish(vsc);
     if(virtio_attach_failed(vsc)) return 0;
     aprint_normal("7\n");
     return 0;
@@ -195,11 +197,16 @@ mmiocmdlattach(int num)
     config_rootfound("mmiocmdl", NULL);
 }
 
+extern void *
+rumpcomp_irq_establish(int intr, int (*handler)(void *), void *data);
+
 static int
 mmiocmdl_alloc_interrupts(struct virtio_mmio_softc *msc)
 {
-	// struct mmiocmdl_softc * const sc = (struct mmiocmdl_softc *)msc;
-	// struct virtio_softc * const vsc = &msc->sc_sc;
+	struct mmiocmdl_softc * const sc = (struct mmiocmdl_softc *)msc;
+	struct virtio_softc * const vsc = &msc->sc_sc;
+
+    msc->sc_ih = rumpcomp_irq_establish(sc->sc_irq, virtio_mmio_intr, msc);
 
     // // struct acpi_irq *irq = kmem_zalloc(sizeof(struct acpi_irq), KM_SLEEP);
     // // acpi_irq->ar_irq = 5;
@@ -207,12 +214,12 @@ mmiocmdl_alloc_interrupts(struct virtio_mmio_softc *msc)
 	// msc->sc_ih = intr_establish_xname(5,  &i8259_pic, 0, IST_EDGE,
     //     IPL_VM, virtio_mmio_intr,
     //         msc, false, device_xname(vsc->sc_dev));
-	// if (msc->sc_ih == NULL) {
-	// 	aprint_error_dev(vsc->sc_dev, "couldn't install interrupt handler\n");
-	// 	return -1;
-	// }
+	if (msc->sc_ih == NULL) {
+		aprint_error_dev(vsc->sc_dev, "couldn't install interrupt handler\n");
+		return -1;
+	}
 
-	// aprint_normal_dev(vsc->sc_dev, "interrupting on irq %d\n", sc->sc_irq);
+	aprint_normal_dev(vsc->sc_dev, "interrupting on irq %d\n", sc->sc_irq);
 
 	return 0;
 }

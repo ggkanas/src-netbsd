@@ -275,6 +275,7 @@ virtio_mmio_intr(void *arg)
 	struct virtio_softc *vsc = &sc->sc_sc;
 	int isr, r = 0;
 
+	aprint_normal("virtio mmio intr\n");
 	/* check and ack the interrupt */
 	isr = bus_space_read_4(sc->sc_iot, sc->sc_ioh,
 			       VIRTIO_MMIO_INTERRUPT_STATUS);
