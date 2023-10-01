@@ -9,6 +9,6 @@ CPPFLAGS+= -DVND_COMPRESSION -DCOMPAT_30 -DCOMPAT_50
 
 KMOD=	mmio
 IOCONF=	mmio.ioconf
-SRCS=	mmio.c mmio-api.c
+#SRCS=	mmio.c mmio-api.c
 
 .include <bsd.kmodule.mk>

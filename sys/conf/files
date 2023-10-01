@@ -1235,6 +1235,7 @@ define	cbbus	{ }			# CardBus attachment
 define	pcmciaslot { }			# PCMCIA slot itself
 define	sdmmcbus { }			# SD/MMC attachment
 define  mmiobus { }         # MMIOCMDL attachment
+define  virtiobus { }         # VirtIO attachment
 
 
 # We need the USB bus controllers here so different busses can

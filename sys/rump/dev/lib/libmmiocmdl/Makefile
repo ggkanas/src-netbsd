@@ -20,7 +20,7 @@ SRCS+= mmio-api.c mmio.c
 
 .PATH:	${RUMPTOP}/../dev/virtio
 
-SRCS+= virtio_mmio.c
+# SRCS+= virtio_mmio.c
 
 CPPFLAGS+= -I${RUMPTOP}/librump/rumpkern
 

@@ -1029,7 +1029,6 @@ config_search_loc(cfsubmatch_t fn, device_t parent,
 			// if(STREQ(cf->cf_name, "vioif"))
 			// 	aprint_normal("%s\n", cf->cf_pspec->cfp_parent);
 			if (cfparent_match(parent, cf->cf_pspec)) {
-				// aprint_normal("yeep %s\n", cf->cf_name);
 			
 				mapply(&m, cf);
 			}

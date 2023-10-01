@@ -5,7 +5,7 @@ version 20151112
 
 include "dev/conf/files"
 
-device mainbus { }: pcibus, mmiobus
+device mainbus { }: pcibus
 attach mainbus at root
 
 device ugenhc: usbus, usbroothub

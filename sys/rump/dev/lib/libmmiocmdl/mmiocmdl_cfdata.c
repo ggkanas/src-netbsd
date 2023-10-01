@@ -17,6 +17,7 @@
 
 // struct cfdriver mmiocmdl_cd;
 // struct cfattach mmiocmdl_ca;
+extern struct cfdata cfdata[];
 
 int mmiocmdlprint(void *, const char*);
 
@@ -48,6 +49,10 @@ RUMP_COMPONENT(RUMP_COMPONENT_DEV)
 
     config_init_component(cfdriver_ioconf_mmiocmdl,
         cfattach_ioconf_mmiocmdl, cfdata_ioconf_mmiocmdl);
+
+
+    memcpy(&cfdata[1], &cfdata_ioconf_mmiocmdl[0], sizeof(cfdata[1]));
+
 
 	rump_pdev_add(mmiocmdlattach, 4);
     

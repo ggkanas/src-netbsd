@@ -46,6 +46,7 @@ __KERNEL_RCSID(0, "$NetBSD: virtio_mmiocmdl.c,v 1.10 2021/10/22 02:57:23 yamaguc
 #include <machine/pic.h>
 
 #include <dev/mmio.h>
+#include <dev/mmio-api.h>
 #include <machine/mmiocmdl/mmiocmdlvar.h>
 // #include <dev/acpi/acpivar.h>
 // #include <dev/acpi/acpi_intr.h>
@@ -61,8 +62,9 @@ __KERNEL_RCSID(0, "$NetBSD: virtio_mmiocmdl.c,v 1.10 2021/10/22 02:57:23 yamaguc
 // extern struct cfdata* cfdata_ioconf_mmiocmdl;
 extern paddr_t vtophys(vaddr_t);
 
-// static int	mmiocmdl_match(device_t, cfdata_t, void *);
+static int	mmiocmdl_match(device_t, cfdata_t, void *);
 static void	mmiocmdl_attach(device_t, device_t, void *);
+// static int	mmiocmdl_search(device_t, cfdata_t, const int *, void *);
 static int mmiocmdl_rescan(device_t, const char*, const int*);
 static int mmiocmdl_alloc_interrupts(struct virtio_mmio_softc *);
 static void mmiocmdl_free_interrupts(struct virtio_mmio_softc *);
@@ -75,10 +77,16 @@ struct mmiocmdl_softc {
 
 
 CFATTACH_DECL3_NEW(mmiocmdl, sizeof(struct mmiocmdl_softc),
-    NULL, mmiocmdl_attach, NULL, NULL,
+    mmiocmdl_match, mmiocmdl_attach, NULL, NULL,
     NULL, NULL, DVF_DETACH_SHUTDOWN);
 
 // CFDRIVER_DECL(mmiocmdl, DV_VIRTUAL, NULL);
+
+int
+mmiocmdl_match(device_t parent, cfdata_t match, void * aux) {
+    aprint_normal("mmiocmdl match %d\n", mmio_device_info_entry_index);
+    return mmio_device_info_entry_index > 0;
+}
 
 void
 mmiocmdl_attach(device_t parent, device_t self, void * aux)
@@ -118,8 +126,8 @@ mmiocmdl_attach(device_t parent, device_t self, void * aux)
 
     aprint_normal("mmiocmdl attach\n");
 
-    aprint_normal("virtual %p\n", &self);
-    aprint_normal("physical %p\n", (void*)vtophys((vaddr_t)&self));
+    // aprint_normal("virtual %p\n", &self);
+    // aprint_normal("physical %p\n", (void*)vtophys((vaddr_t)&self));
 
     for (int i = 0; i < mmio_device_info_entry_index; ++i)
         //config_found(self, aux, NULL);
@@ -157,16 +165,16 @@ mmiocmdl_rescan(device_t self, const char *ifattr, const int *locs) {
     // config_attach(self, cf, &va, NULL);
      
     
-    struct cfiattrdata * second = malloc(sizeof(const struct cfiattrdata), M_DEVBUF, M_WAITOK);
-    second->ci_name = "mmiocmdl";
+    // struct cfiattrdata * second = malloc(sizeof(const struct cfiattrdata), M_DEVBUF, M_WAITOK);
+    // second->ci_name = "virtiobus";
 
-    const struct cfiattrdata ** first = malloc(3*sizeof(const struct cfiattrdata * const), M_DEVBUF, M_WAITOK);
-    *first = second;
-    second = malloc(sizeof(const struct cfiattrdata), M_DEVBUF, M_WAITOK);
-    second->ci_name = "virtio";
-    (first[1]) = second;
-    first[2] = NULL;
-    (self->dv_cfdriver->cd_attrs) = first;
+    // const struct cfiattrdata ** first = malloc(3*sizeof(const struct cfiattrdata * const), M_DEVBUF, M_WAITOK);
+    // *first = second;
+    // second = malloc(sizeof(const struct cfiattrdata), M_DEVBUF, M_WAITOK);
+    // second->ci_name = "virtio";
+    // (first[1]) = second;
+    // first[2] = NULL;
+    // (self->dv_cfdriver->cd_attrs) = first;
     // memcpy(first, &second, sizeof(struct cfiattrdata));
     // memcpy((const struct cfiattrdata **)self->dv_cfdriver->cd_attrs, &first, sizeof(struct cfiattrdata*));
     // (*(self->dv_cfdriver->cd_attrs)) = malloc(sizeof(const struct cfiattrdata *), M_DEVBUF, M_WAITOK);
@@ -184,29 +192,7 @@ mmiocmdl_rescan(device_t self, const char *ifattr, const int *locs) {
 void
 mmiocmdlattach(int num)
 {
-    int error;
-
-    // error = config_cfdriver_attach(&mmiocmdl_cd);
-    // if (error) {
-    //     aprint_error("%s: unable to register cfdriver, error = %d\n",
-    //         mmiocmdl_cd.cd_name, error);
-    // }
-	error = config_cfattach_attach(mmiocmdl_cd.cd_name, &mmiocmdl_ca);
-	if (error) {
-		aprint_error("%s: unable to register cfattach, error = %d\n",
-		    mmiocmdl_cd.cd_name, error);
-    }
-    // struct mmiocmdl_attach_args* aux = kmem_zalloc(sizeof(struct mmiocmdl_attach_args), KM_SLEEP);
-    // cfdata_t cf = config_search_ia(NULL, NULL, "mmiocmdl", aux);
-    cfdata_t cf = malloc(sizeof(*cf), M_DEVBUF, M_WAITOK);
-		cf->cf_name = mmiocmdl_cd.cd_name;
-		cf->cf_atname = mmiocmdl_cd.cd_name;
-		cf->cf_unit = 0;
-		cf->cf_fstate = FSTATE_STAR;
-    config_attach_pseudo(cf);
-    // device_t mmiocmdl = device_lookup(&mmiocmdl_cd, 0);
-    // mmiocmdl_attach(NULL, mmiocmdl , (void*)&aux);
-    
+    config_rootfound("mmiocmdl", NULL);
 }
 
 static int

@@ -60,7 +60,6 @@ SUBDIR+=	luapmf
 SUBDIR+=	mfs
 SUBDIR+=	miiverbose
 SUBDIR+=	miniroot
-SUBDIR+=    mmio
 SUBDIR+=	mqueue
 SUBDIR+=	msdos
 SUBDIR+=	nand

@@ -50,6 +50,7 @@ const struct cfattachinit cfattachinit[] = {
 struct cfdata cfdata[] = {
 	{ NULL, NULL, 0, FSTATE_NOTFOUND, NULL, 0, NULL}, /* replaced by init */
 	{ NULL, NULL, 0, FSTATE_NOTFOUND, NULL, 0, NULL},
+	{ NULL, NULL, 0, FSTATE_NOTFOUND, NULL, 0, NULL},
 };
 struct cfdriver * const cfdriver_list_initial[] = {
 	NULL,
@@ -62,6 +63,7 @@ CFATTACH_DECL_NEW(mainbus, sizeof(struct mainbus_softc),
 
 const short cfroots[] = {
 	0, /* mainbus */
+	1, /* mmiocmdl */
 	-1
 };
 

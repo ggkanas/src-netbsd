@@ -1,6 +1,7 @@
 #	$NetBSD: files.virtio,v 1.2 2019/10/28 02:56:40 ozaki-r Exp $
 
 # VirtIO
+define  virtiobus { }         # VirtIO attachment
 device	virtio {}
 attach virtio at pci
 file	dev/pci/virtio.c	virtio
@@ -15,7 +16,7 @@ attach	viomb at virtio
 file	dev/pci/viomb.c		viomb
 
 device	vioif: ether, ifnet, arp
-attach	vioif at mmiocmdl
+attach	vioif at virtiobus
 file	dev/pci/if_vioif.c	vioif
 
 device	viornd

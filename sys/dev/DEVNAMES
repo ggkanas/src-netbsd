@@ -904,7 +904,7 @@ mlx			MI
 mly			MI
 mmem			dreamcast
 mmiobus         amd64   Attribute
-mmiocmdl        MI
+mmiocmdl        amd64
 mms			bebox
 mms			dreamcast
 mms			i386
@@ -1478,6 +1478,7 @@ vidc			acorn32
 vidcaudio		acorn32
 vidcvideo		acorn32
 videomode		MI		Attribute
+virtiobus         amd64   Attribute
 vme			MI
 vme			atari
 vme			sun3

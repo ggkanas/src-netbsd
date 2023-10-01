@@ -6,9 +6,9 @@
 #file	dev/mmiocmdl/mmiocmdl.c	mmiocmdl needs-flag
 
 
-device mmiocmdl {}          # MMIOcmdl "bus" attachment
+device mmiocmdl {}: virtiobus          # MMIOcmdl "bus" attachment
 attach mmiocmdl at root
-file dev/mmiocmdl/mmiocmdl.c    mmiocmdl
+file arch/amd64/amd64/mmiocmdl.c    mmiocmdl
 
 #device virtio_mmiocmdl
 #attach virtio_mmiocmdl at mmiocmdl
