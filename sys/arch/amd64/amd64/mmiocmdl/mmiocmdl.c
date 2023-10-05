@@ -84,7 +84,7 @@ CFATTACH_DECL3_NEW(mmiocmdl, sizeof(struct mmiocmdl_softc),
 
 int
 mmiocmdl_match(device_t parent, cfdata_t match, void * aux) {
-    aprint_normal("mmiocmdl match %d\n", mmio_device_info_entry_index);
+    // aprint_normal("mmiocmdl match %d\n", mmio_device_info_entry_index);
     return mmio_device_info_entry_index > 0;
 }
 
@@ -117,22 +117,22 @@ mmiocmdl_attach(device_t parent, device_t self, void * aux)
 
     msc->sc_alloc_interrupts = mmiocmdl_alloc_interrupts;
     msc->sc_free_interrupts = mmiocmdl_free_interrupts;
-    aprint_normal("1\n");
+    // aprint_normal("1\n");
 
 
     virtio_mmio_common_attach(msc);
-    aprint_normal("2\n");
+    // aprint_normal("2\n");
 
     mmiocmdl_rescan(self, "virtio", NULL);
 
-    aprint_normal("mmiocmdl attach\n");
+    // aprint_normal("mmiocmdl attach\n");
 
     // aprint_normal("virtual %p\n", &self);
     // aprint_normal("physical %p\n", (void*)vtophys((vaddr_t)&self));
 
-    for (int i = 0; i < mmio_device_info_entry_index; ++i)
+    for (int i = 0; i < mmio_device_info_entry_index; ++i);
         //config_found(self, aux, NULL);
-        aprint_normal("found mmio\n");
+        // aprint_normal("found mmio\n");
 }
 
 
@@ -155,13 +155,13 @@ mmiocmdl_rescan(device_t self, const char *ifattr, const int *locs) {
     struct virtio_softc * const vsc = &msc->sc_sc;
     struct virtio_attach_args va;
 
-    aprint_normal("3\n");
+    // aprint_normal("3\n");
     if (vsc->sc_child) return 0;
 
-    aprint_normal("4\n");
+    // aprint_normal("4\n");
     memset(&va, 0, sizeof(va));
     va.sc_childdevid = vsc->sc_childdevid;
-    aprint_normal("5: %d\n", vsc->sc_childdevid);
+    // aprint_normal("5: %d\n", vsc->sc_childdevid);
     // cfdata_t cf = config_search_ia(NULL, self, "virtio", &va);
     // config_attach(self, cf, &va, NULL);
      
@@ -184,10 +184,10 @@ mmiocmdl_rescan(device_t self, const char *ifattr, const int *locs) {
     // config_found_sm_loc(self, NULL, NULL, &va, NULL, match_child);
     config_found(self, &va, NULL);
     // if (vioif_ca.ca_match(self, NULL, vsc)) vioif_ca.ca_attach(self)
-    aprint_normal("6\n");
+    // aprint_normal("6\n");
     virtio_child_attach_finish(vsc);
     if(virtio_attach_failed(vsc)) return 0;
-    aprint_normal("7\n");
+    // aprint_normal("7\n");
     return 0;
 }
 

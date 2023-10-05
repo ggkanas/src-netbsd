@@ -157,16 +157,16 @@ virtio_mmio_common_attach(struct virtio_mmio_softc *sc)
 	struct virtio_softc *vsc = &sc->sc_sc;
 	device_t self = vsc->sc_dev;
 	uint32_t id, magic, ver;
-	aprint_normal("%p\n", (void*)sc->sc_ioh);
+	// aprint_normal("%p\n", (void*)sc->sc_ioh);
 	magic = bus_space_read_4(sc->sc_iot, sc->sc_ioh,
 	    VIRTIO_MMIO_MAGIC_VALUE);
-		aprint_normal("1.1\n");
+		// aprint_normal("1.1\n");
 	if (magic != VIRTIO_MMIO_MAGIC) {
 		aprint_error_dev(vsc->sc_dev,
 		    "wrong magic value 0x%08x; giving up\n", magic);
 		return;
 	}
-	aprint_normal("1.2");
+	// aprint_normal("1.2");
 
 	ver = bus_space_read_4(sc->sc_iot, sc->sc_ioh, VIRTIO_MMIO_VERSION);
 	if (ver != 1 && ver != 2) {
@@ -174,14 +174,14 @@ virtio_mmio_common_attach(struct virtio_mmio_softc *sc)
 		    "unknown version 0x%02x; giving up\n", ver);
 		return;
 	}
-	aprint_normal("1.3");
+	// aprint_normal("1.3");
 
 	id = bus_space_read_4(sc->sc_iot, sc->sc_ioh, VIRTIO_MMIO_DEVICE_ID);
 
 	/* we could use PAGE_SIZE, but virtio(4) assumes 4KiB for now */
 	bus_space_write_4(sc->sc_iot, sc->sc_ioh, VIRTIO_MMIO_GUEST_PAGE_SIZE,
 	    VIRTIO_PAGE_SIZE);
-	aprint_normal("1.4");
+	// aprint_normal("1.4");
 	/* no device connected. */
 	if (id == 0)
 		return;
@@ -200,7 +200,7 @@ virtio_mmio_common_attach(struct virtio_mmio_softc *sc)
 		aprint_error_dev(self, "can't map config i/o space\n");
 		return;
 	}
-aprint_normal("1.6");
+// aprint_normal("1.6");
 
 	virtio_device_reset(vsc);
 	virtio_mmio_set_status(vsc, VIRTIO_CONFIG_DEVICE_STATUS_ACK);
@@ -209,7 +209,7 @@ aprint_normal("1.6");
 	/* XXX: use softc as aux... */
 	vsc->sc_childdevid = id;
 	vsc->sc_child = NULL;
-	aprint_normal("1.8");
+	// aprint_normal("1.8");
 }
 
 int
@@ -275,7 +275,7 @@ virtio_mmio_intr(void *arg)
 	struct virtio_softc *vsc = &sc->sc_sc;
 	int isr, r = 0;
 
-	aprint_normal("virtio mmio intr\n");
+	// aprint_normal("virtio mmio intr\n");
 	/* check and ack the interrupt */
 	isr = bus_space_read_4(sc->sc_iot, sc->sc_ioh,
 			       VIRTIO_MMIO_INTERRUPT_STATUS);
