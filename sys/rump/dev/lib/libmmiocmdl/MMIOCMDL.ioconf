@@ -6,4 +6,6 @@ include "rump/dev/files.rump"
 
 mmiocmdl* at root
 
+no pci
+
 

@@ -2,13 +2,14 @@
 
 # VirtIO
 define  virtiobus { }         # VirtIO attachment
-device	virtio {}
+device	virtio {}: virtiobus
 attach virtio at pci
 file	dev/pci/virtio.c	virtio
 # with mmiocmdl: virtio_mmio
 #file dev/mmiocmdl/mmiocmdl.c mmiocmdl
 
-attach	ld at virtio with ld_virtio
+attach ld at virtiobus with ld_virtio
+#attach	ld at virtio with ld_virtio
 file	dev/pci/ld_virtio.c	ld_virtio
 
 device	viomb

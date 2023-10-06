@@ -1,8 +1,7 @@
 #include <sys/types.h>
 #include <sys/malloc.h>
-// #include <stdio.h>
-// #include <stdlib.h>
-// #include <string.h>
+#include <sys/kmem.h>
+#include <sys/systm.h>
 
 #include <dev/mmio.h>
 #include <dev/pci/virtiovar.h>
@@ -208,9 +207,13 @@ struct dev_info_t* parse_mmio_device_info(char *cmdline)
 
     uint64_t size = 0;
     char *size_pos = prefix_pos + strlen(VIRTIO_MMIO_DEVICE_CMDLINE_PREFIX);
-    //if (sscanf(size_pos,"%ld", &size) != 1)
+    char *after_pos;
+    //aprint_normal("1\n");
+    if(!(size = (uint64_t) strtoll(size_pos, &after_pos, 10)))
+        return NULL;
+    // if (vsscanf(size_pos,"%ld", &size) != 1)
     //    return NULL;
-    size = 1;
+    // size = 4;
 
     char *at_pos = strstr(size_pos,"@");
     if (!at_pos)
@@ -230,18 +233,33 @@ struct dev_info_t* parse_mmio_device_info(char *cmdline)
     }
 
     uint64_t irq = 0, address = 0;
-    // if (sscanf(at_pos, "@%lli:%u", &address, &irq) != 2)
+    //aprint_normal("2\n");
+    if(!(address = (uint64_t) strtoll(at_pos + 1, &after_pos, 0))) {
+        //aprint_normal("fail\n");
+        return NULL;
+    }
+
+    //aprint_normal("%08llx\n", (long long) address);
+        
+    //aprint_normal("3\n");
+    if(after_pos[0] != ':') return NULL;
+    //aprint_normal("4\n");
+    if(!(irq = (uint64_t) strtoll(after_pos + 1, &after_pos, 10)))
+        return NULL;
+    //aprint_normal("5\n");
+    // if (vsscanf(at_pos, "@%lli:%u", &address, &irq) != 2)
     //    return NULL;
     // address = 0x1ff40000;
-    address = 0xd0000000;
-    irq = 5;
+    // address = 0xd0000000;
+    // irq = 5;
 
+    //aprint_normal("%s\n", after_pos);
     // Find first white-character or null as an end of device description
-    char * desc_end_pos = at_pos;
+    char * desc_end_pos = after_pos;
     while (*desc_end_pos != 0 && !isspace(*desc_end_pos))
         desc_end_pos++;
 
-    // Remove conf info part from cmdline by copying over remaining part
+    // Remove conf info part from cmdline by copying over remaining pasrt
     do {
        *prefix_pos = *desc_end_pos++;
     } while (*prefix_pos++);

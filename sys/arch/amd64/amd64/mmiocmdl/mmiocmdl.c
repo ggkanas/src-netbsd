@@ -65,7 +65,7 @@ extern paddr_t vtophys(vaddr_t);
 static int	mmiocmdl_match(device_t, cfdata_t, void *);
 static void	mmiocmdl_attach(device_t, device_t, void *);
 // static int	mmiocmdl_search(device_t, cfdata_t, const int *, void *);
-static int mmiocmdl_rescan(device_t, const char*, const int*);
+static int mmiocmdl_rescan(device_t);
 static int mmiocmdl_alloc_interrupts(struct virtio_mmio_softc *);
 static void mmiocmdl_free_interrupts(struct virtio_mmio_softc *);
 
@@ -84,8 +84,9 @@ CFATTACH_DECL3_NEW(mmiocmdl, sizeof(struct mmiocmdl_softc),
 
 int
 mmiocmdl_match(device_t parent, cfdata_t match, void * aux) {
+    struct mmiocmdl_attach_args * const maa = aux;
     // aprint_normal("mmiocmdl match %d\n", mmio_device_info_entry_index);
-    return mmio_device_info_entry_index > 0;
+    return mmio_device_info_entry_index > maa->maa_mmio_index ;
 }
 
 void
@@ -94,20 +95,22 @@ mmiocmdl_attach(device_t parent, device_t self, void * aux)
     struct mmiocmdl_softc * const sc = device_private(self);
     struct virtio_mmio_softc * const msc = &sc->sc_msc;
     struct virtio_softc * const vsc = &msc->sc_sc;
-    // struct mmiocmdl_attach_args * const maa = aux;
+    struct mmiocmdl_attach_args * const maa = aux;
     bus_addr_t addr;
     bus_size_t size;
-    int error;
+    int error, i;
 
-    addr = (bus_addr_t)mmio_device_info_entries[0].address;
-    size = (bus_size_t)mmio_device_info_entries[0].size;
-    sc->sc_irq = mmio_device_info_entries[0].irq_no;
+    i = maa->maa_mmio_index;
+    addr = (bus_addr_t)mmio_device_info_entries[i].address;
+    size = (bus_size_t)mmio_device_info_entries[i].size;
+    sc->sc_irq = mmio_device_info_entries[i].irq_no;
 
     sc->sc_phandle = addr;
     msc->sc_iot = (bus_space_tag_t)1; //x86_bus_space_mem
     vsc->sc_dev = self;
     // vsc->sc_dmat = &pci_bus_dma_tag;
 
+    aprint_normal("\n");
     error = bus_space_map(msc->sc_iot, addr, size, 0, &msc->sc_ioh);
     if(error) {
         aprint_error_dev(self, "couldn't map %#" PRIx64 ": %d", (uint64_t)addr, error);
@@ -123,33 +126,12 @@ mmiocmdl_attach(device_t parent, device_t self, void * aux)
     virtio_mmio_common_attach(msc);
     // aprint_normal("2\n");
 
-    mmiocmdl_rescan(self, "virtio", NULL);
-
-    // aprint_normal("mmiocmdl attach\n");
-
-    // aprint_normal("virtual %p\n", &self);
-    // aprint_normal("physical %p\n", (void*)vtophys((vaddr_t)&self));
-
-    for (int i = 0; i < mmio_device_info_entry_index; ++i);
-        //config_found(self, aux, NULL);
-        // aprint_normal("found mmio\n");
+    mmiocmdl_rescan(self);
 }
 
-
-extern struct cfattach vioif_ca;
-
-int match_child(device_t, cfdata_t, const int*, void*);
-int
-match_child(device_t parent, cfdata_t cf, const int *locs, void* aux) {
-    // struct mmiocmdl_softc * const sc = device_private(parent);
-    // struct virtio_mmio_softc * const msc = &sc->sc_msc;
-    // struct virtio_softc * const vsc = &msc->sc_sc;
-    if (vioif_ca.ca_match(parent, cf, aux)) return 1;
-    else return 0;
-}
 
 static int
-mmiocmdl_rescan(device_t self, const char *ifattr, const int *locs) {
+mmiocmdl_rescan(device_t self) {
     struct mmiocmdl_softc * const sc = device_private(self);
     struct virtio_mmio_softc * const msc = &sc->sc_msc;
     struct virtio_softc * const vsc = &msc->sc_sc;
@@ -161,29 +143,8 @@ mmiocmdl_rescan(device_t self, const char *ifattr, const int *locs) {
     // aprint_normal("4\n");
     memset(&va, 0, sizeof(va));
     va.sc_childdevid = vsc->sc_childdevid;
-    // aprint_normal("5: %d\n", vsc->sc_childdevid);
-    // cfdata_t cf = config_search_ia(NULL, self, "virtio", &va);
-    // config_attach(self, cf, &va, NULL);
-     
-    
-    // struct cfiattrdata * second = malloc(sizeof(const struct cfiattrdata), M_DEVBUF, M_WAITOK);
-    // second->ci_name = "virtiobus";
 
-    // const struct cfiattrdata ** first = malloc(3*sizeof(const struct cfiattrdata * const), M_DEVBUF, M_WAITOK);
-    // *first = second;
-    // second = malloc(sizeof(const struct cfiattrdata), M_DEVBUF, M_WAITOK);
-    // second->ci_name = "virtio";
-    // (first[1]) = second;
-    // first[2] = NULL;
-    // (self->dv_cfdriver->cd_attrs) = first;
-    // memcpy(first, &second, sizeof(struct cfiattrdata));
-    // memcpy((const struct cfiattrdata **)self->dv_cfdriver->cd_attrs, &first, sizeof(struct cfiattrdata*));
-    // (*(self->dv_cfdriver->cd_attrs)) = malloc(sizeof(const struct cfiattrdata *), M_DEVBUF, M_WAITOK);
-    // *(*(self->dv_cfdriver->cd_attrs[0])) = 
-    // (*self->dv_cfdriver->cd_attrs[0])->ci_name = "mmiocmdl";
-    // config_found_sm_loc(self, NULL, NULL, &va, NULL, match_child);
     config_found(self, &va, NULL);
-    // if (vioif_ca.ca_match(self, NULL, vsc)) vioif_ca.ca_attach(self)
     // aprint_normal("6\n");
     virtio_child_attach_finish(vsc);
     if(virtio_attach_failed(vsc)) return 0;
@@ -194,7 +155,13 @@ mmiocmdl_rescan(device_t self, const char *ifattr, const int *locs) {
 void
 mmiocmdlattach(int num)
 {
-    config_rootfound("mmiocmdl", NULL);
+    struct mmiocmdl_attach_args * maa;
+    for (int i = 0; i < mmio_device_info_entry_index; ++i) {
+        maa = kmem_zalloc(sizeof(struct mmiocmdl_attach_args), KM_SLEEP);
+        maa->maa_mmio_index = i;
+        config_rootfound("mmiocmdl", maa);
+    }
+        
 }
 
 extern void *

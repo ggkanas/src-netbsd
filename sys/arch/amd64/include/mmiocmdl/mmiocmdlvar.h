@@ -6,6 +6,7 @@ struct mmiocmdl_attach_args {
 	bus_space_tag_t maa_bst;
 	bus_dma_tag_t maa_dmat;
 	int maa_phandle;
+	int maa_mmio_index;
     uint64_t maa_addr;
     uint64_t maa_size;
     unsigned int maa_irq_no;

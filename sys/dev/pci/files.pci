@@ -1126,11 +1126,12 @@ file    dev/pci/sisfb.c		sisfb	needs-flag
 
 include "dev/pci/files.virtio"
 # VirtIO
-device	virtio {}
+device	virtio {}: virtiobus
 attach	virtio at pci
 file	dev/pci/virtio.c	virtio
 
-attach	ld at virtio with ld_virtio
+attach ld at virtiobus with ld_virtio
+#attach	ld at virtio with ld_virtio
 file	dev/pci/ld_virtio.c	ld_virtio
 
 device	viomb

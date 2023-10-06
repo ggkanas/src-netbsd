@@ -1,5 +1,6 @@
 #include <dev/mmio.h>
 #include <dev/mmio-api.h>
+#include <sys/systm.h>
 
 struct dev_info_t mmio_device_info_entries[128];
 int mmio_device_info_entry_index;

@@ -177,7 +177,7 @@ virtio_mmio_common_attach(struct virtio_mmio_softc *sc)
 	// aprint_normal("1.3");
 
 	id = bus_space_read_4(sc->sc_iot, sc->sc_ioh, VIRTIO_MMIO_DEVICE_ID);
-
+	aprint_normal("id is %d\n", id);
 	/* we could use PAGE_SIZE, but virtio(4) assumes 4KiB for now */
 	bus_space_write_4(sc->sc_iot, sc->sc_ioh, VIRTIO_MMIO_GUEST_PAGE_SIZE,
 	    VIRTIO_PAGE_SIZE);
@@ -211,6 +211,7 @@ virtio_mmio_common_attach(struct virtio_mmio_softc *sc)
 	vsc->sc_child = NULL;
 	// aprint_normal("1.8");
 }
+
 
 int
 virtio_mmio_common_detach(struct virtio_mmio_softc *sc, int flags)
@@ -275,7 +276,7 @@ virtio_mmio_intr(void *arg)
 	struct virtio_softc *vsc = &sc->sc_sc;
 	int isr, r = 0;
 
-	// aprint_normal("virtio mmio intr\n");
+	aprint_normal("virtio mmio intr\n");
 	/* check and ack the interrupt */
 	isr = bus_space_read_4(sc->sc_iot, sc->sc_ioh,
 			       VIRTIO_MMIO_INTERRUPT_STATUS);

@@ -136,8 +136,7 @@ CFATTACH_DECL_NEW(ld_virtio, sizeof(struct ld_virtio_softc),
 static int
 ld_virtio_match(device_t parent, cfdata_t match, void *aux)
 {
-	struct virtio_softc *va = aux;
-
+	struct  virtio_attach_args *va = aux;
 	if (va->sc_childdevid == VIRTIO_DEVICE_ID_BLOCK)
 		return 1;
 
@@ -260,7 +259,7 @@ ld_virtio_attach(device_t parent, device_t self, void *aux)
 	vsc->sc_child = self;
 	vsc->sc_ipl = IPL_BIO;
 	vsc->sc_vqs = &sc->sc_vq;
-	vsc->sc_nvqs = 1;
+	vsc->sc_nvqs = 0;
 	vsc->sc_config_change = NULL;
 	vsc->sc_intrhand = virtio_vq_intr;
 	vsc->sc_flags = 0;
@@ -325,6 +324,7 @@ ld_virtio_attach(device_t parent, device_t self, void *aux)
 	    "I/O request") != 0) {
 		goto err;
 	}
+	vsc->sc_nvqs = 1;
 	qsize = sc->sc_vq.vq_num;
 	sc->sc_vq.vq_done = ld_virtio_vq_done;
 
