@@ -720,6 +720,7 @@ static int
 vioif_init(struct ifnet *ifp)
 {
 	struct vioif_softc *sc = ifp->if_softc;
+	aprint_normal("vioif_init\n");
 
 	vioif_stop(ifp, 0);
 
@@ -784,6 +785,7 @@ vioif_start(struct ifnet *ifp)
 	struct virtqueue *vq = &sc->sc_vq[VQ_TX];
 	struct mbuf *m;
 	int queued = 0, retry = 0;
+	aprint_normal("vioif_start\n");
 
 	VIOIF_TX_LOCK(sc);
 
